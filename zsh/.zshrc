@@ -1,8 +1,13 @@
+export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+
 # Enable phpbrew before OhMyZsh to be able to use php version in prompt
 source $HOME/.phpbrew/bashrc
 
 # If you come from bash you might have to change your $PATH.
-export PATH=$HOME/bin:/usr/local/opt/node@8/bin:/usr/local/bin:/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:/Users/jLelievre/dev/PHP_CodeSniffer/bin:$PATH
+export PATH=$HOME/bin:$PATH
+export PATH=/usr/local/opt/icu4c/bin:$PATH
+export PATH=/usr/local/opt/node@8/bin:$PATH
+export PATH=/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"

@@ -12,7 +12,14 @@ phpbrew install 5.6 +default +intl +mysql +apxs2 +soap +fileinfo
 
 phpbrew use 5.6.30
 phpbrew ext install xdebug
-phpbrew ext install gd -- --with-jpeg-dir=/usr/local/Cellar/
+phpbrew ext install gd \
+-- --with-gd=shared \
+--enable-gd-native-ttf \
+--with-jpeg-dir=/usr/local/opt/libjpg/ \
+--with-png-dir=/usr/local/opt/libpng/ \
+--with-zlib-dir=/usr/local/opt/zlib/
+
 phpbrew ext install iconv
 
 CXXFLAGS='-std=c++11 -stdlib=libc++' phpbrew --debug install php-7.1 +default +intl +mysql +apxs2 +soap +fileinfo -- --with-openssl
+

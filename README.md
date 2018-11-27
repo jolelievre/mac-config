@@ -1,23 +1,38 @@
-TODO list to install
+Mac installation for development environment
+--------------------------------------------
 
+Follow these steps in the appropriate order (strongly recommanded)
+Or launch them based on your needs
+
+# install/01-brew.sh
 - brew
+
+# install/02-zsh.sh
+- zsh config
 - zsh
 - ohmyzsh
 - install zsh-syntax-highlighting
 - install Fonts for zsh theme
-- copy .zshrc and .ohmyzsh/custom folder
+- copy .ohmyzsh/custom folder (aliases and theme)
 
-Apache
-- uninstall os Apache (mainly DaemonLaunch files I think)
-- uninstall OS mysql
+# install/03-apache
+- uninstall OS default Apache
 - brew install apache
 - create basic folders with sites-enable/sites-available
+
+# install/04-php.sh
+- install phpbrew
+- install php-5.6 php-7.1 php-7.2
+- install script sphp
+- install composer
+- restart Apache
+
+# install/05-mysql.sh
 - brew install mariadb
 
-PHPBrew
-- install phpbrew
-- install php7.1 php7.2
-- install script sphp
+# install/06-prestashop-tools.sh
+- Clone prestashop tools repository
+- Install prestashop tools scripts
 
 Applications
 - iTerm2 (Go to Settings > General > Load preferences from a custom folder or URL > select this repo iterm2 folder)
