@@ -1,0 +1,8 @@
+# This is Git's per-user configuration file.
+[user]
+# Please adapt and uncomment the following lines:
+    name = Jonathan Lelievre
+    email = jo.lelievre@gmail.com
+
+[core]
+	excludesfile = /Users/jo/.gitignore
