@@ -3,7 +3,7 @@
 # The following steps come from this tutorial
 # https://enzo.weknowinc.com/articles/2014/10/17/manage-php-versions-with-phpbrew
 
-dependencies="automake autoconf curl pcre re2c mhash libtool icu4c gettext libpng jpeg libxml2 mcrypt gmp libevent openssl bzip2 zlib libiconv"
+dependencies="automake autoconf curl pcre re2c mhash libtool icu4c gettext libpng jpeg libxml2 mcrypt gmp libevent openssl bzip2 zlib libiconv libzip"
 for dependency in $dependencies; do
     if test ! -d /usr/local/Cellar/$dependency; then
         echo Install dependency $dependency
@@ -23,7 +23,12 @@ if test ! -d ~/.phpbrew; then
     phpbrew init
 fi
 
-phpVersions="5.6 7.1 7.2"
+if test $# -gt 0; then
+    phpVersions=$1
+else
+    phpVersions="5.6 7.1 7.2 7.3"
+fi
+
 latestVersions=""
 for phpVersion in $phpVersions; do
     knownVersions=`phpbrew known | grep $phpVersion`
@@ -55,7 +60,9 @@ for phpVersion in $latestVersions; do
             echo Error: could not build $phpVersion
             continue
         fi
-        echo Restart zsh instance to update PATH
+        echo Reload zshrc to update path
+        source ~/.zshrc
+        echo Switch to $phpVersion
         phpbrew use $phpVersion
         if [[ $phpVersion == php-7* ]]; then
             phpbrew ext install xdebug
