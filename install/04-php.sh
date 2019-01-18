@@ -40,31 +40,35 @@ echo Try to install $latestVersions
 
 installedVersions=`phpbrew list | sed s_\ __g | sed s_\*__g`
 echo Already installed: $installedVersions
+lastInstalledVersion=''
+availableVersion=''
 for phpVersion in $latestVersions; do
     matchedVersion=0
     for installedVersion in $installedVersions; do
         if [ $installedVersion = $phpVersion ]; then
             matchedVersion=1
+            availableVersion=$phpVersion
             break;
         fi
     done
 
     if [ $matchedVersion -ne 1 ]; then
-        echo Install PHP version $phpVersion
+        lastInstalledVersion=$phpVersion
+        echo Install PHP version $lastInstalledVersion
         # Necessary for PHP 5.6 maybe not for 7+
         export CPPFLAGS+=' -DU_USING_ICU_NAMESPACE=1'
         export CXXFLAGS+='-std=c++11 -stdlib=libc++'
 
-        phpbrew install $phpVersion +default +intl +iconv=/usr/local/opt/libiconv +mysql +apxs2 +soap +fileinfo +bz2=/usr/local/opt/bzip2 +zlib=/usr/local/opt/zlib
+        phpbrew install $lastInstalledVersion +default +intl +iconv=/usr/local/opt/libiconv +mysql +apxs2 +soap +fileinfo +bz2=/usr/local/opt/bzip2 +zlib=/usr/local/opt/zlib
         if test $? -ne 0; then
-            echo Error: could not build $phpVersion
+            echo Error: could not build $lastInstalledVersion
             continue
         fi
         echo Reload zshrc to update path
         source ~/.zshrc
-        echo Switch to $phpVersion
-        phpbrew use $phpVersion
-        if [[ $phpVersion == php-7* ]]; then
+        echo Switch to $lastInstalledVersion
+        phpbrew use $lastInstalledVersion
+        if [[ $lastInstalledVersion == php-7* ]]; then
             phpbrew ext install xdebug
         fi
         phpbrew ext install gd \
@@ -88,9 +92,14 @@ if test ! -f /usr/local/bin/composer; then
     brew install composer
 fi
 
-echo Restart Apache
-sudo apachectl -k restart
-
-echo Check your PHP install by visting:
+echo "Don't forget to check your PHP install by visiting:"
 echo http://localhost/info.php
 echo
+
+if test $lastInstalledVersion != ''; then
+    echo Switch to last installed version $lastInstalledVersion
+    ~/dev/scripts/sphp.sh $lastInstalledVersion
+else
+    echo Switch to available version $availableVersion
+    ~/dev/scripts/sphp.sh $availableVersion
+fi
