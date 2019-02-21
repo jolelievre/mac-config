@@ -27,6 +27,7 @@ if [ $matchedVersion -ne 1 ]; then
     echo "Unsupported php version: $phpVersion"
     echo "Allowed versions:"
     echo $phpVersions
+    exit 1
 fi
 
 versionNumber=`echo $phpVersion | sed "s/php-//"`

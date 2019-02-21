@@ -34,9 +34,22 @@ Or launch them based on your needs
 - Clone prestashop tools repository
 - Install prestashop tools scripts
 
+# install/07-git.sh
+- Set default git config (global .gitignore)
+
+# install/08-node.sh
+- Install node8
+- Install gulp
+
+# install/09-blackfire.sh
+- Install blackfire agent
+- Install blackfire client
+- Init default setting with client id, server id, token, ...
+- Install PHP probe extension for all installed PHP versions
+
 Applications
 - iTerm2 (Go to Settings > General > Load preferences from a custom folder or URL > select this repo iterm2 folder)
-- Chrome
+- Chrome (AdBlock Plus, JSON viewer, Blackfire companion)
 - PHPStorm
 - Sequel Pro
 - Postman
