@@ -70,6 +70,7 @@ for phpVersion in $latestVersions; do
         phpbrew use $lastInstalledVersion
         if [[ $lastInstalledVersion == php-7* ]]; then
             phpbrew ext install xdebug
+            phpbrew ext install apcu
         fi
         phpbrew ext install gd \
             -- --with-gd=shared \
