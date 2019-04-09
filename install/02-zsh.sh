@@ -1,5 +1,7 @@
 #!/bin/sh
 
+BASEDIR=$(dirname "$0")
+
 if test ! -f ~/.zshrc; then
     echo Install ZSH config
     cp $BASEDIR/../zsh/.zshrc ~/.zshrc
@@ -14,8 +16,6 @@ if test ! -d ~/.oh-my-zsh; then
     echo Install OhMyZSH
     sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
 fi
-
-BASEDIR=$(dirname "$0")
 
 echo Install Fonts
 cp $BASEDIR/../fonts/* ~/Library/Fonts/
@@ -33,4 +33,9 @@ fi
 if test ! -f ~/.oh-my-zsh/custom/themes/jolimbo.zsh-theme; then
     echo Install Jolimbo Theme
     cp $BASEDIR/../zsh/.oh-my-zsh/custom/themes/jolimbo.zsh-theme ~/.oh-my-zsh/custom/themes/jolimbo.zsh-theme
+fi
+
+if test ! -d /usr/local/opt/gnu-getopt; then
+    echo Install gnu-getopt
+    brew install gnu-getopt
 fi

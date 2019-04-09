@@ -11,5 +11,4 @@ alias gl="git log --graph --all --decorate"
 alias sphp='~/dev/scripts/sphp.sh'
 
 # Prestashop install alias
-alias ps_install='~/dev/scripts/ps_install.sh'
-alias ps_uninstall='~/dev/scripts/ps_uninstall.sh'
+source ~/dev/ps-install-tools/aliases.sh
