@@ -9,6 +9,8 @@ alias gl="git log --graph --all --decorate"
 
 # PHP switch alias
 alias sphp='~/dev/scripts/sphp.sh'
+alias mphp='php -d memory_limit=-1'
+alias mcomposer='mphp `which composer`'
 
 # Prestashop install alias
 source ~/dev/ps-install-tools/aliases.sh

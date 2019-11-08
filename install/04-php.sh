@@ -91,6 +91,7 @@ fi
 if test ! -f /usr/local/bin/composer; then
     echo Install composer
     brew install composer
+    composer config --global process-timeout 2000
 fi
 
 echo "Don't forget to check your PHP install by visiting:"

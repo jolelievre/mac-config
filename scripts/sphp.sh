@@ -35,6 +35,8 @@ regexpVersion=`echo $versionNumber | sed "s/\./\\\\\./g"`
 echo "Switching php cli version to $versionNumber"
 phpbrew switch $phpVersion
 which php
+rm -f ~/.phpbrew/php/php
+ln -s `which php` ~/.phpbrew/php/php
 
 echo "Switching apache module version to $versionNumber"
 cp /usr/local/etc/httpd/httpd.conf /usr/local/etc/httpd/httpd.conf_bac
