@@ -3,7 +3,7 @@
 # The following steps come from this tutorial
 # https://enzo.weknowinc.com/articles/2014/10/17/manage-php-versions-with-phpbrew
 
-dependencies="automake autoconf curl pcre re2c mhash libtool icu4c gettext libpng jpeg libxml2 mcrypt gmp libevent openssl bzip2 zlib libiconv libzip"
+dependencies="automake autoconf curl pcre re2c mhash libtool icu4c gettext libpng jpeg libxml2 mcrypt gmp libevent openssl bzip2 zlib libiconv libzip pkg-config"
 for dependency in $dependencies; do
     if test ! -d /usr/local/Cellar/$dependency; then
         echo Install dependency $dependency
@@ -26,7 +26,7 @@ fi
 if test $# -gt 0; then
     phpVersions=$1
 else
-    phpVersions="5.6 7.1 7.2 7.3"
+    phpVersions="5.6 7.1 7.2 7.3 7.4"
 fi
 
 latestVersions=""
@@ -57,7 +57,12 @@ for phpVersion in $latestVersions; do
         echo Install PHP version $lastInstalledVersion
         # Necessary for PHP 5.6 maybe not for 7+
         export CPPFLAGS+=' -DU_USING_ICU_NAMESPACE=1'
-        export CXXFLAGS+='-std=c++11 -stdlib=libc++'
+        export CXXFLAGS+=' -std=c++11 -stdlib=libc++'
+
+        pkgDependencies="icu4c"
+        for dependency in $pkgDependencies; do
+            export PKG_CONFIG_PATH+=":/usr/local/opt/$dependency/lib/pkgconfig"
+        done
 
         phpbrew install $lastInstalledVersion +default +intl +iconv=/usr/local/opt/libiconv +mysql +apxs2 +soap +fileinfo +bz2=/usr/local/opt/bzip2 +zlib=/usr/local/opt/zlib
         if test $? -ne 0; then
@@ -78,6 +83,10 @@ for phpVersion in $latestVersions; do
             --with-jpeg-dir=/usr/local/opt/libjpg/ \
             --with-png-dir=/usr/local/opt/libpng/ \
             --with-zlib-dir=/usr/local/opt/zlib/
+        xdebugIniFile="~/.phpbrew/php/$lastInstalledVersion/var/db/xdebug.ini"
+        if test -f $xdebugIniFile; then
+            cat $BASEDIR/../php/xdebug.ini.dist >> $xdebugIniFile
+        fi
     fi
 done
 

@@ -6,7 +6,7 @@ source $HOME/.phpbrew/bashrc
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:$PATH
 export PATH=/usr/local/opt/icu4c/bin:$PATH
-export PATH=/usr/local/opt/node@8/bin:$PATH
+export PATH=/usr/local/opt/node@10/bin:$PATH
 export PATH=/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$PATH
 export PATH=/usr/local/opt/gnu-getopt/bin:$PATH
 
