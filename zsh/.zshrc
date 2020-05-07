@@ -9,6 +9,7 @@ export PATH=/usr/local/opt/icu4c/bin:$PATH
 export PATH=/usr/local/opt/node@10/bin:$PATH
 export PATH=/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$PATH
 export PATH=/usr/local/opt/gnu-getopt/bin:$PATH
+export PATH=/usr/local/opt/ruby/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
