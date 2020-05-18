@@ -39,3 +39,8 @@ if test ! -d /usr/local/opt/gnu-getopt; then
     echo Install gnu-getopt
     brew install gnu-getopt
 fi
+
+if test ! -d /usr/local/bin/wget; then
+    echo Install wget
+    brew install wget
+fi
