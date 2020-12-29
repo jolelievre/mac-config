@@ -42,17 +42,26 @@ cat >~/www/info.php <<EOL
 
 EOL
 
+# Stop apache service after installation with brew
+sudo brew services stop httpd
+
 BASEDIR=$(dirname "$0")
+USERNAME=$(users)
 
 echo Prepare Apache default config
-cp $BASEDIR/../apache/httpd.conf /usr/local/etc/httpd/httpd.conf
+sed "s+{USERNAME}+$USERNAME+" $BASEDIR/../apache/httpd.conf > /usr/local/etc/httpd/httpd.conf
 if test ! -d /usr/local/etc/httpd/extra/sites-available; then
     mkdir -p /usr/local/etc/httpd/extra/sites-available
 fi
 if test ! -d /usr/local/etc/httpd/extra/sites-enabled; then
     mkdir -p /usr/local/etc/httpd/extra/sites-enabled
 fi
-cp $BASEDIR/../apache/extra/httpd-vhosts.conf /usr/local/etc/httpd/extra/httpd-vhosts.conf
+
+echo Prepare Apache default Vhost
+sed "s+{USERNAME}+$USERNAME+" $BASEDIR/../apache/extra/httpd-vhosts.conf > /usr/local/etc/httpd/extra/httpd-vhosts.conf
+
+echo Test config
+apachectl -t || exit 1
 
 echo Set Apache to start automatically
 # This one to set automatic boot of apache
