@@ -44,7 +44,12 @@ if test ! -d /usr/local/opt/gnu-getopt; then
     brew install gnu-getopt
 fi
 
-if test ! -d /usr/local/bin/wget; then
+if test ! -f /usr/local/bin/wget; then
     echo Install wget
     brew install wget
+fi
+
+if test ! -f /usr/local/bin/emacs; then
+    echo Install emacs
+    brew install emacs
 fi

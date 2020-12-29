@@ -9,12 +9,22 @@ fi
 
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:$PATH
+
+# This allows to use VSCode as cli with "code" command
+export PATH=/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$PATH
+
+# These are brew dependencies keg only which need path override to be used correctly
 export PATH=/usr/local/opt/icu4c/bin:$PATH
 export PATH=/usr/local/opt/node@10/bin:$PATH
-export PATH=/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$PATH
 export PATH=/usr/local/opt/gnu-getopt/bin:$PATH
 export PATH=/usr/local/opt/ruby/bin:$PATH
 export PATH=/usr/local/opt/openssl@1.1/bin:$PATH
+export PATH=/usr/local/opt/openldap/bin:$PATH
+export PATH=/usr/local/opt/openldap/sbin:$PATH
+export PATH=/usr/local/opt/libiconv/bin:$PATH
+export PATH=/usr/local/opt/apr/bin:$PATH
+export PATH=/usr/local/opt/apr-util/bin:$PATH
+export PATH=/usr/local/opt/httpd/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
