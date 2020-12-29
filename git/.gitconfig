@@ -5,4 +5,4 @@
     email = jo.lelievre@gmail.com
 
 [core]
-	excludesfile = /Users/jo/.gitignore
+	excludesfile = ~/.gitignore
