@@ -13,8 +13,12 @@ if test ! -f /usr/local/bin/zsh; then
 fi
 
 if test ! -d ~/.oh-my-zsh; then
-    echo Install OhMyZSH
-    sh -c "$(curl -fsSL https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+    echo "Install OhMyZSH (a new instance of ZSH might be open exit it to continue the installation)"
+    sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)"
+
+    # OhMyZSH setup its own default config on install
+    echo "Forcing zsh config"
+    cp $BASEDIR/../zsh/.zshrc ~/.zshrc
 fi
 
 echo Install Fonts
