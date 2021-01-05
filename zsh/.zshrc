@@ -15,6 +15,7 @@ export PATH=/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$P
 
 # These are brew dependencies keg only which need path override to be used correctly
 export PATH=/usr/local/opt/icu4c/bin:$PATH
+export PATH=/usr/local/opt/icu4c/sbin:$PATH
 export PATH=/usr/local/opt/node@10/bin:$PATH
 export PATH=/usr/local/opt/gnu-getopt/bin:$PATH
 export PATH=/usr/local/opt/ruby/bin:$PATH

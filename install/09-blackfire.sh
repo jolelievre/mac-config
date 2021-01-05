@@ -17,7 +17,7 @@ launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.blackfire-agent.plist
 # Init client
 cp $BASEDIR/../blackfire/.blackfire.ini ~
 
-phpVersions="56 71 72 73"
+phpVersions="56 71 72 73 74 80"
 for phpVersion in $phpVersions; do
     blackfireDir="/usr/local/Cellar/blackfire-php$phpVersion"
     if test ! -d $blackfireDir; then
