@@ -1,4 +1,11 @@
-xdebug.remote_autostart=1
-xdebug.remote_port=9000
-xdebug.remote_enable=1
+xdebug.mode=debug
+xdebug.start_with_request=yes
+xdebug.client_port=9000
+
+; These settings have been revmoed in Xdebug 3
+; xdebug.remote_enable=1
+; xdebug.remote_autostart=1
+; xdebug.remote_port=9000
+
+; Disabled by default because it uses a lot of resources
 ; xdebug.profiler_enable=1
