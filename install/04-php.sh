@@ -43,7 +43,7 @@ echo "Prefer homebrew as source"
 if test $# -gt 0; then
     phpVersions=$1
 else
-    phpVersions="7.1 7.2 7.3 7.4 8.0 5.6"
+    phpVersions="5.6 7.1 7.2 7.3 7.4 8.0"
 fi
 
 echo Getting available versions
@@ -83,16 +83,22 @@ for phpVersion in $latestVersions; do
         # Versions >=7.2 need recent icu
         if test $? == 2; then
             echo "Use recent icu4c"
+            export PATH="/usr/local/opt/icu4c/bin:$PATH"
+            export PATH="/usr/local/opt/icu4c/bin:$PATH"
+            export PATH="/usr/local/opt/icu4c@$icuVersion/sbin:$PATH"
             export LDFLAGS=' -L/usr/local/opt/icu4c/lib'
             export CPPFLAGS=' -DU_USING_ICU_NAMESPACE=1 -I/usr/local/opt/icu4c/include'
             export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
         else
             # Versions before 7.1 needs older icu
-            echo "Switch to icu4c 64.2"
-            install_old_brew_package icu4c 64.2
-            export LDFLAGS=' -L/usr/local/opt/icu4c@64.2/lib'
-            export CPPFLAGS=' -DU_USING_ICU_NAMESPACE=1 -I/usr/local/opt/icu4c@64.2/include'
-            export PKG_CONFIG_PATH="/usr/local/opt/icu4c@64.2/lib/pkgconfig"
+            icuVersion="64.2"
+            echo "Switch to icu4c $icuVersion"
+            install_old_brew_package icu4c $icuVersion
+            export PATH="/usr/local/opt/icu4c@$icuVersion/bin:$PATH"
+            export PATH="/usr/local/opt/icu4c@$icuVersion/sbin:$PATH"
+            export LDFLAGS=" -L/usr/local/opt/icu4c@$icuVersion/lib"
+            export CPPFLAGS=" -DU_USING_ICU_NAMESPACE=1 -I/usr/local/opt/icu4c@$icuVersion/include"
+            export PKG_CONFIG_PATH="/usr/local/opt/icu4c@$icuVersion/lib/pkgconfig"
         fi
         # Necessary for PHP 5.6 maybe not for 7+
         export CXXFLAGS=' -std=c++11 -stdlib=libc++'
@@ -123,13 +129,16 @@ for phpVersion in $latestVersions; do
 
         # Add default PHP config
         phpIniFile="~/.phpbrew/php/$lastInstalledVersion/etc/php.ini"
-        cat $BASEDIR/../php/php.ini.dist >> $phpIniFile
+        phpIniDistFile="$BASEDIR/../php/php.ini.dist"
+        echo `pwd` $BASEDIR
+        echo "Append $phpIniDistFile to $phpIniFile"
+        cat $phpIniDistFile >> $phpIniFile
 
         # Add default xdebug config
         xdebugIniFile="~/.phpbrew/php/$lastInstalledVersion/var/db/xdebug.ini"
-        if test -f $xdebugIniFile; then
-            cat $BASEDIR/../php/xdebug.ini.dist >> $xdebugIniFile
-        fi
+        xdebugIniDistFile="$BASEDIR/../php/xdebug.ini.dist"
+        echo "Append $xdebugIniDistFile to $xdebugIniFile"
+        cat xdebugIniDistFile >> $xdebugIniFile
 
         # Clean after build
         phpbrew clean $lastInstalledVersion
