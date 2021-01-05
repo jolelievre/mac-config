@@ -14,4 +14,6 @@ done
 if test ! -d ~/dev/ps-install-tools; then
     echo Clone PrestaShop Install tools
     git clone git@github.com:jolelievre/ps-install-tools.git ~/dev/ps-install-tools
+else
+    echo PrestaShop Install tools already installed
 fi
