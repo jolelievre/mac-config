@@ -4,7 +4,8 @@
 # https://enzo.weknowinc.com/articles/2014/10/17/manage-php-versions-with-phpbrew
 
 BASEDIR=$(dirname "$0")
-source $BASEDIR/../tools/switch_icu.sh
+source $BASEDIR/../tools/tools.sh
+source $BASEDIR/../tools/brew.sh
 
 dependencies="automake autoconf curl pcre re2c mhash libtool icu4c gettext libpng jpeg libxml2 mcrypt gmp libevent openssl@1.1 bzip2 zlib libiconv libzip pkg-config oniguruma"
 for dependency in $dependencies; do
@@ -43,7 +44,6 @@ if test $# -gt 0; then
     phpVersions=$1
 else
     phpVersions="7.1 7.2 7.3 7.4 8.0 5.6"
-    phpVersions="7.1"
 fi
 
 echo Getting available versions
@@ -75,37 +75,31 @@ for phpVersion in $latestVersions; do
         echo Install PHP version $lastInstalledVersion
         # Use the appropriate icu version
         echo "Setting proper icu version"
-        phpNumVersion=`echo $phpVersion | sed 's/php-//'`
-        echo "PHP version $phpVersion num version $phpNumVersion"
 
         # If result is 2 then 7.2.0 is superior to php version
+        phpNumVersion=`echo $phpVersion | sed 's/php-//'`
         vercomp 7.2.0 $phpNumVersion
 
         # Versions >=7.2 need recent icu
         if test $? == 2; then
-            echo "Reset icu4c"
-            reset_brew_package icu4c
+            echo "Use recent icu4c"
+            export LDFLAGS=' -L/usr/local/opt/icu4c/lib'
+            export CPPFLAGS=' -DU_USING_ICU_NAMESPACE=1 -I/usr/local/opt/icu4c/include'
+            export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
         else
             # Versions before 7.1 needs older icu
             echo "Switch to icu4c 64.2"
-            switch_brew_package icu4c 64.2
+            install_old_brew_package icu4c 64.2
+            export LDFLAGS=' -L/usr/local/opt/icu4c@64.2/lib'
+            export CPPFLAGS=' -DU_USING_ICU_NAMESPACE=1 -I/usr/local/opt/icu4c@64.2/include'
+            export PKG_CONFIG_PATH="/usr/local/opt/icu4c@64.2/lib/pkgconfig"
         fi
-
-        exit 1
-
         # Necessary for PHP 5.6 maybe not for 7+
-        export CXXFLAGS+=' -std=c++11 -stdlib=libc++'
-        export LDFLAGS+=' -L/usr/local/opt/icu4c/lib'
-        export CPPFLAGS+=' -DU_USING_ICU_NAMESPACE=1 -I/usr/local/opt/icu4c/include'
-
-        pkgDependencies="icu4c"
-        for dependency in $pkgDependencies; do
-            export PKG_CONFIG_PATH+=":/usr/local/opt/$dependency/lib/pkgconfig"
-        done
+        export CXXFLAGS=' -std=c++11 -stdlib=libc++'
 
         # Clean before install in case a previous build is still present
-        echo Clean previous build
-        phpbrew clean $lastInstalledVersion
+        echo Purge previous build
+        phpbrew purge $lastInstalledVersion
 
         phpbrew install -j 4 $lastInstalledVersion +default +intl +iconv=/usr/local/opt/libiconv +mysql +apxs2 +soap +fileinfo +mbstring +bz2=/usr/local/opt/bzip2 +zlib=/usr/local/opt/zlib
         if test $? -ne 0; then
