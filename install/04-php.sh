@@ -3,6 +3,9 @@
 # The following steps come from this tutorial
 # https://enzo.weknowinc.com/articles/2014/10/17/manage-php-versions-with-phpbrew
 
+BASEDIR=$(dirname "$0")
+source $BASEDIR/../tools/switch_icu.sh
+
 dependencies="automake autoconf curl pcre re2c mhash libtool icu4c gettext libpng jpeg libxml2 mcrypt gmp libevent openssl@1.1 bzip2 zlib libiconv libzip pkg-config oniguruma"
 for dependency in $dependencies; do
     if test ! -d /usr/local/Cellar/$dependency; then
@@ -28,18 +31,19 @@ if test -f ~/.phpbrew/bashrc; then
 fi
 
 echo Self update phpbrew
-phpbrew self-update
+# phpbrew self-update
 
 echo Update list of known versions
-phpbrew update
+# phpbrew update
 
 echo "Prefer homebrew as source"
-phpbrew lookup-prefix homebrew
+# phpbrew lookup-prefix homebrew
 
 if test $# -gt 0; then
     phpVersions=$1
 else
     phpVersions="7.1 7.2 7.3 7.4 8.0 5.6"
+    phpVersions="7.1"
 fi
 
 echo Getting available versions
@@ -69,6 +73,26 @@ for phpVersion in $latestVersions; do
     if [ $matchedVersion -ne 1 ]; then
         lastInstalledVersion=$phpVersion
         echo Install PHP version $lastInstalledVersion
+        # Use the appropriate icu version
+        echo "Setting proper icu version"
+        phpNumVersion=`echo $phpVersion | sed 's/php-//'`
+        echo "PHP version $phpVersion num version $phpNumVersion"
+
+        # If result is 2 then 7.2.0 is superior to php version
+        vercomp 7.2.0 $phpNumVersion
+
+        # Versions >=7.2 need recent icu
+        if test $? == 2; then
+            echo "Reset icu4c"
+            reset_brew_package icu4c
+        else
+            # Versions before 7.1 needs older icu
+            echo "Switch to icu4c 64.2"
+            switch_brew_package icu4c 64.2
+        fi
+
+        exit 1
+
         # Necessary for PHP 5.6 maybe not for 7+
         export CXXFLAGS+=' -std=c++11 -stdlib=libc++'
         export LDFLAGS+=' -L/usr/local/opt/icu4c/lib'
@@ -83,7 +107,7 @@ for phpVersion in $latestVersions; do
         echo Clean previous build
         phpbrew clean $lastInstalledVersion
 
-        phpbrew install -j 4 $lastInstalledVersion +default +intl +iconv=/usr/local/opt/libiconv +mysql +apxs2 +soap +fileinfo +bz2=/usr/local/opt/bzip2 +zlib=/usr/local/opt/zlib
+        phpbrew install -j 4 $lastInstalledVersion +default +intl +iconv=/usr/local/opt/libiconv +mysql +apxs2 +soap +fileinfo +mbstring +bz2=/usr/local/opt/bzip2 +zlib=/usr/local/opt/zlib
         if test $? -ne 0; then
             echo Error: could not build $lastInstalledVersion
             continue
@@ -92,7 +116,6 @@ for phpVersion in $latestVersions; do
         source ~/.zshrc
         echo Switch to $lastInstalledVersion
         phpbrew use $lastInstalledVersion
-        phpbrew ext install mbstring
         if [[ $lastInstalledVersion == php-7* ]]; then
             phpbrew ext install xdebug
             phpbrew ext install apcu
@@ -116,12 +139,13 @@ for phpVersion in $latestVersions; do
 
         # Clean after build
         phpbrew clean $lastInstalledVersion
+    else
+        echo "PHP version $phpVersion already installed"
     fi
 done
 
 if test ! -f ~/dev/scripts/sphp.sh; then
     echo Install sPHP
-    BASEDIR=$(dirname "$0")
     mkdir -p ~/dev/scripts
     cp $BASEDIR/../scripts/sphp.sh ~/dev/scripts/sphp.sh
 fi
@@ -136,7 +160,7 @@ echo "Don't forget to check your PHP install by visiting:"
 echo http://localhost/info.php
 echo
 
-if test $lastInstalledVersion != ''; then
+if test "$lastInstalledVersion" != ''; then
     echo Switch to last installed version $lastInstalledVersion
     ~/dev/scripts/sphp.sh $lastInstalledVersion
 else

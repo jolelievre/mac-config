@@ -4,6 +4,8 @@ Mac installation for development environment
 Follow these steps in the appropriate order (strongly recommanded)
 Or launch them based on your needs
 
+WARNING: between each step it might be recommended to reboot your computer so that installed libraries are correctly used
+
 # install/01-brew.sh
 - brew
 
