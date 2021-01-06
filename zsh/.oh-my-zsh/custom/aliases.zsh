@@ -13,6 +13,6 @@ alias mphp='php -d memory_limit=-1'
 alias mcomposer='mphp `which composer`'
 
 # Prestashop install alias
-if test ! -f ~/dev/ps-install-tools/aliases.sh; then
+if test -f ~/dev/ps-install-tools/aliases.sh; then
     source ~/dev/ps-install-tools/aliases.sh
 fi

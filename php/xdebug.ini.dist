@@ -3,6 +3,9 @@ xdebug.mode=debug
 xdebug.start_with_request=yes
 xdebug.client_port=9000
 
+; This is to avoid multiple warning messages when PHPStorm client is not listening
+xdebug.log_level = 0
+
 ; These settings have been revmoed in Xdebug 3
 ; xdebug.remote_enable=1
 ; xdebug.remote_autostart=1

@@ -7,7 +7,7 @@ BASEDIR=$(dirname "$0")
 source $BASEDIR/../tools/tools.sh
 source $BASEDIR/../tools/brew.sh
 
-dependencies="automake autoconf curl pcre re2c mhash libtool icu4c gettext libpng jpeg libxml2 mcrypt gmp libevent openssl@1.1 bzip2 zlib libiconv libzip pkg-config oniguruma"
+dependencies="automake autoconf curl pcre re2c mhash libtool freetype icu4c gettext libpng jpeg libxml2 mcrypt gmp libevent openssl@1.1 bzip2 zlib libiconv libzip pkg-config oniguruma gd"
 for dependency in $dependencies; do
     if test ! -d /usr/local/Cellar/$dependency; then
         echo Install dependency $dependency
@@ -32,13 +32,13 @@ if test -f ~/.phpbrew/bashrc; then
 fi
 
 echo Self update phpbrew
-# phpbrew self-update
+phpbrew self-update
 
 echo Update list of known versions
-# phpbrew update
+phpbrew update
 
 echo "Prefer homebrew as source"
-# phpbrew lookup-prefix homebrew
+phpbrew lookup-prefix homebrew
 
 if test $# -gt 0; then
     phpVersions=$1
@@ -107,7 +107,7 @@ for phpVersion in $latestVersions; do
         echo Purge previous build
         phpbrew purge $lastInstalledVersion
 
-        phpbrew install -j 4 $lastInstalledVersion +default +intl +iconv=/usr/local/opt/libiconv +mysql +apxs2 +soap +fileinfo +mbstring +bz2=/usr/local/opt/bzip2 +zlib=/usr/local/opt/zlib
+        phpbrew install -j 4 $lastInstalledVersion +default +intl +iconv=$(brew --prefix libiconv) +mysql +apxs2 +soap +fileinfo +mbstring +bz2=$(brew --prefix bzip2) +zlib=$(brew --prefix zlib) +gd
         if test $? -ne 0; then
             echo Error: could not build $lastInstalledVersion
             continue
@@ -122,10 +122,12 @@ for phpVersion in $latestVersions; do
         fi
         phpbrew ext install gd \
             -- --with-gd=shared \
+            --enable-gd \
             --enable-gd-native-ttf \
-            --with-jpeg-dir=/usr/local/opt/libjpg/ \
-            --with-png-dir=/usr/local/opt/libpng/ \
-            --with-zlib-dir=/usr/local/opt/zlib/
+            --with-jpeg-dir=$(brew --prefix jpeg) \
+            --with-jpeg=$(brew --prefix jpeg) \
+            --with-png-dir=$(brew --prefix libpng) \
+            --with-zlib-dir=$(brew --prefix zlib)
 
         # Add default PHP config
         phpIniFile="~/.phpbrew/php/$lastInstalledVersion/etc/php.ini"
