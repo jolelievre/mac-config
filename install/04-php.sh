@@ -7,7 +7,7 @@ BASEDIR=$(dirname "$0")
 source $BASEDIR/../tools/tools.sh
 source $BASEDIR/../tools/brew.sh
 
-dependencies="automake autoconf curl pcre re2c mhash libtool freetype icu4c gettext libpng jpeg libxml2 mcrypt gmp libevent openssl@1.1 bzip2 zlib libiconv libzip pkg-config oniguruma gd"
+dependencies="automake autoconf curl pcre re2c mhash libtool freetype icu4c gettext libpng jpeg libxml2 mcrypt gmp libevent openssl@1.1 bzip2 zlib libiconv libzip pkg-config oniguruma gd libxpm"
 for dependency in $dependencies; do
     if test ! -d /usr/local/Cellar/$dependency; then
         echo Install dependency $dependency
@@ -120,14 +120,22 @@ for phpVersion in $latestVersions; do
             phpbrew ext install xdebug
             phpbrew ext install apcu
         fi
-        phpbrew ext install gd \
-            -- --with-gd=shared \
-            --enable-gd \
-            --enable-gd-native-ttf \
-            --with-jpeg-dir=$(brew --prefix jpeg) \
-            --with-jpeg=$(brew --prefix jpeg) \
-            --with-png-dir=$(brew --prefix libpng) \
-            --with-zlib-dir=$(brew --prefix zlib)
+
+        vercomp 7.4.0 $phpNumVersion
+        if test $? == 2; then
+            # Version >= PHP 7.4
+            phpbrew ext install gd
+        else
+            # Version < 7.4
+            phpbrew ext install gd \
+                -- --with-gd=$(brew --prefix gd) \
+                --enable-gd-native-ttf \
+                --with-freetype-dir=$(brew --prefix freetype) \
+                --with-jpeg-dir=$(brew --prefix jpeg) \
+                --with-jpeg=$(brew --prefix jpeg) \
+                --with-png-dir=$(brew --prefix libpng) \
+                --with-zlib-dir=$(brew --prefix zlib)
+        fi
 
         # Add default PHP config
         phpIniFile="~/.phpbrew/php/$lastInstalledVersion/etc/php.ini"
