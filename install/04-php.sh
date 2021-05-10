@@ -76,6 +76,10 @@ for phpVersion in $latestVersions; do
         # Use the appropriate icu version
         echo "Setting proper icu version"
 
+        # Clean before install in case a previous build is still present
+        echo Purge previous build
+        phpbrew purge $lastInstalledVersion
+
         # If result is 2 then 7.2.0 is superior to php version
         phpNumVersion=`echo $phpVersion | sed 's/php-//'`
         vercomp 7.2.0 $phpNumVersion
@@ -84,11 +88,12 @@ for phpVersion in $latestVersions; do
         if test $? == 2; then
             echo "Use recent icu4c"
             export PATH="/usr/local/opt/icu4c/bin:$PATH"
-            export PATH="/usr/local/opt/icu4c/bin:$PATH"
-            export PATH="/usr/local/opt/icu4c@$icuVersion/sbin:$PATH"
+            export PATH="/usr/local/opt/icu4c/sbin:$PATH"
             export LDFLAGS=' -L/usr/local/opt/icu4c/lib'
             export CPPFLAGS=' -DU_USING_ICU_NAMESPACE=1 -I/usr/local/opt/icu4c/include'
             export PKG_CONFIG_PATH="/usr/local/opt/icu4c/lib/pkgconfig"
+
+            phpbrew install -j 4 $lastInstalledVersion +default +intl +iconv=$(brew --prefix libiconv) +mysql +apxs2 +soap +fileinfo +mbstring +bz2=$(brew --prefix bzip2) +zlib=$(brew --prefix zlib) +gd
         else
             # Versions before 7.1 needs older icu
             icuVersion="64.2"
@@ -99,15 +104,11 @@ for phpVersion in $latestVersions; do
             export LDFLAGS=" -L/usr/local/opt/icu4c@$icuVersion/lib"
             export CPPFLAGS=" -DU_USING_ICU_NAMESPACE=1 -I/usr/local/opt/icu4c@$icuVersion/include"
             export PKG_CONFIG_PATH="/usr/local/opt/icu4c@$icuVersion/lib/pkgconfig"
+
+            phpbrew install -j 4 $lastInstalledVersion +default +iconv=$(brew --prefix libiconv) +mysql +apxs2 +soap +fileinfo +mbstring +bz2=$(brew --prefix bzip2) +zlib=$(brew --prefix zlib) +gd
+            phpbrew ext install intl
         fi
-        # Necessary for PHP 5.6 maybe not for 7+
-        export CXXFLAGS=' -std=c++11 -stdlib=libc++'
 
-        # Clean before install in case a previous build is still present
-        echo Purge previous build
-        phpbrew purge $lastInstalledVersion
-
-        phpbrew install -j 4 $lastInstalledVersion +default +intl +iconv=$(brew --prefix libiconv) +mysql +apxs2 +soap +fileinfo +mbstring +bz2=$(brew --prefix bzip2) +zlib=$(brew --prefix zlib) +gd
         if test $? -ne 0; then
             echo Error: could not build $lastInstalledVersion
             continue
@@ -135,6 +136,7 @@ for phpVersion in $latestVersions; do
                 --with-jpeg=$(brew --prefix jpeg) \
                 --with-png-dir=$(brew --prefix libpng) \
                 --with-zlib-dir=$(brew --prefix zlib)
+                --with-xpm-dir=$(brew --prefix libXpm)
         fi
 
         # Add default PHP config
