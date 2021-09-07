@@ -58,7 +58,10 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "Restarting apache"
-sudo apachectl -k restart
+sudo apachectl -k stop
+sleep 1
+sudo apachectl -k start
+
 echo
 echo "You can check the config at http://localhost/info.php"
 echo
