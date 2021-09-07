@@ -58,6 +58,8 @@ fi
 
 echo "Restarting apache"
 sudo apachectl -k restart
+echo
 echo "You can check the config at http://localhost/info.php"
+echo
 echo "Opening new $SHELL instance in order to update the path"
 $SHELL

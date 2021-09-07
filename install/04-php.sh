@@ -50,12 +50,34 @@ for phpVersion in $phpVersions; do
     mv $switchFile $iniFile
 
     echo Switch to $lastInstalledVersion
-    brew unlink php@$lastInstalledVersion
-    brew link --overwrite --force php@$lastInstalledVersion
+    rm -f /usr/local/opt/php
+    ln -s /usr/local/opt/php@$phpVersion /usr/local/opt/php
+
+    # Install appropriate version of xdebug
+    if test $phpVersion == '5.6'; then
+        xdebugVersion=xdebug-2.5.5
+        xdebugIniDistFile="$BASEDIR/../php/old.xdebug.ini.dist"
+    elif test $phpVersion == '7.0'; then
+        xdebugVersion=xdebug-2.7.2
+        xdebugIniDistFile="$BASEDIR/../php/old.xdebug.ini.dist"
+    elif test $phpVersion == '7.1'; then
+        xdebugVersion=xdebug-2.9.8
+        xdebugIniDistFile="$BASEDIR/../php/old.xdebug.ini.dist"
+    else
+        xdebugVersion=xdebug
+        xdebugIniDistFile="$BASEDIR/../php/xdebug.ini.dist"
+    fi
+
+    echo "Installing Xdebug extension version: $xdebugVersion"
+    pecl uninstall -r xdebug
+    pecl install $xdebugVersion
+
+    echo "Clean PECL invalid config"
+    cat $iniFile | sed '/^zend_extension="xdebug.so"/d' > $switchFile
+    mv $switchFile $iniFile
 
     # Set default xdebug config
     xdebugIniFile="/usr/local/etc/php/$lastInstalledVersion/conf.d/xdebug.ini"
-    xdebugIniDistFile="$BASEDIR/../php/xdebug.ini.dist"
     echo "Set default xdebug config from $xdebugIniDistFile"
     cat $xdebugIniDistFile > $xdebugIniFile
 done
