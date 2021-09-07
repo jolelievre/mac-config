@@ -1,12 +1,5 @@
 export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
-# Enable phpbrew before OhMyZsh to be able to use php version in prompt
-if test -f $HOME/.phpbrew/bashrc; then
-    source $HOME/.phpbrew/bashrc
-else
-    echo "WARNING: phpbrew doesn't seem to be installed, could not load its config"
-fi
-
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:$PATH
 
@@ -19,13 +12,15 @@ export PATH=/usr/local/opt/icu4c/sbin:$PATH
 export PATH=/usr/local/opt/node@10/bin:$PATH
 export PATH=/usr/local/opt/gnu-getopt/bin:$PATH
 export PATH=/usr/local/opt/ruby/bin:$PATH
-export PATH=/usr/local/opt/openssl@1.1/bin:$PATH
+export PATH=/usr/local/opt/openssl/bin:$PATH
 export PATH=/usr/local/opt/openldap/bin:$PATH
 export PATH=/usr/local/opt/openldap/sbin:$PATH
 export PATH=/usr/local/opt/libiconv/bin:$PATH
 export PATH=/usr/local/opt/apr/bin:$PATH
 export PATH=/usr/local/opt/apr-util/bin:$PATH
 export PATH=/usr/local/opt/httpd/bin:$PATH
+export PATH=/usr/local/opt/php/bin:$PATH
+export PATH=/usr/local/opt/php/sbin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
