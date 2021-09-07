@@ -30,10 +30,6 @@ if [ $matchedVersion -ne 1 ]; then
     exit 1
 fi
 
-echo "Unlinking all php versions"
-for validVersion in $phpVersions; do
-    brew unlink php@$validVersion
-done
 echo "Switching php cli version to $phpVersion"
 brew link --overwrite --force php@$phpVersion
 
