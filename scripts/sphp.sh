@@ -3,7 +3,8 @@
 script=`basename "$0"`
 
 # Display Usage
-phpVersions=`brew list | grep php | sed s_\ __g | sed s_php@__g`
+lastStableVersion=8.0
+phpVersions=`brew list | grep php | sed s_\ __g | sed s_php@__g | sed s_php_${lastStableVersion}_g`
 if [ $# -ne 1 ]; then
     echo "Usage: $script {php_version}"
     echo
