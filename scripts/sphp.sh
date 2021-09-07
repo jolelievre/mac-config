@@ -1,10 +1,9 @@
 #!/bin/sh
 
-source ~/.phpbrew/bashrc
 script=`basename "$0"`
 
 # Display Usage
-phpVersions=`phpbrew list | sed s_\ __g | sed s_\*__g`
+phpVersions=`brew list | grep php | sed s_\ __g | sed s_php@__g`
 if [ $# -ne 1 ]; then
     echo "Usage: $script {php_version}"
     echo
@@ -30,18 +29,24 @@ if [ $matchedVersion -ne 1 ]; then
     exit 1
 fi
 
-versionNumber=`echo $phpVersion | sed "s/php-//"`
-regexpVersion=`echo $versionNumber | sed "s/\./\\\\\./g"`
-echo "Switching php cli version to $versionNumber"
-phpbrew switch $phpVersion
-which php
-rm -f ~/.phpbrew/php/php
-ln -s `which php` ~/.phpbrew/php/php
+echo "Unlinking all php versions"
+for validVersion in $phpVersions; do
+    brew unlink php@$validVersion
+done
+echo "Switching php cli version to $phpVersion"
+brew link --overwrite --force php@$phpVersion
 
-echo "Switching apache module version to $versionNumber"
-cp /usr/local/etc/httpd/httpd.conf /usr/local/etc/httpd/httpd.conf_bac
+echo Updating global php symlink
+rm -f /usr/local/opt/php
+ln -s /usr/local/opt/php@$phpVersion /usr/local/opt/php
+
+echo "Switching apache module version to $phpVersion"
+loadModule=`brew info php@7.4 | grep LoadModule | xargs`
+echo "Add load module $loadModule"
+
 # Disable all php_module expect the selected one
-cat /usr/local/etc/httpd/httpd.conf | sed "s/^LoadModule\ php/#LoadModule\ php/g" | sed "s/^#LoadModule\(.*\)$regexpVersion/LoadModule\1$regexpVersion/g" > /usr/local/etc/httpd/httpd.conf_switch
+cp /usr/local/etc/httpd/httpd.conf /usr/local/etc/httpd/httpd.conf_bac
+cat /usr/local/etc/httpd/httpd.conf | sed '/^LoadModule php/d' | awk "/LoadModule rewrite_module.*/{print;print \"$loadModule\";next}1" > /usr/local/etc/httpd/httpd.conf_switch
 mv /usr/local/etc/httpd/httpd.conf_switch /usr/local/etc/httpd/httpd.conf
 
 apachectl configtest
