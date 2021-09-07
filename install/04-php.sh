@@ -49,20 +49,15 @@ for phpVersion in $phpVersions; do
     cat $iniFile | sed "s/^memory_limit\(.*\)$/memory_limit\ =\ 512M/g" > $switchFile
     mv $switchFile $iniFile
 
-    echo Reload zshrc to update path
-    source ~/.zshrc
     echo Switch to $lastInstalledVersion
     brew unlink php@$lastInstalledVersion
     brew link --overwrite --force php@$lastInstalledVersion
 
-    # Add default xdebug config
+    # Set default xdebug config
     xdebugIniFile="/usr/local/etc/php/$lastInstalledVersion/conf.d/xdebug.ini"
     xdebugIniDistFile="$BASEDIR/../php/xdebug.ini.dist"
-    if test ! -f $xdebugIniFile; then
-        touch $xdebugIniFile
-    fi
-    echo "Append $xdebugIniDistFile to $xdebugIniFile"
-    cat xdebugIniDistFile >> $xdebugIniFile
+    echo "Set default xdebug config from $xdebugIniDistFile"
+    cat $xdebugIniDistFile > $xdebugIniFile
 done
 
 if test ! -f ~/dev/scripts/sphp.sh; then
