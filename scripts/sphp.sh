@@ -41,7 +41,7 @@ rm -f /usr/local/opt/php
 ln -s /usr/local/opt/php@$phpVersion /usr/local/opt/php
 
 echo "Switching apache module version to $phpVersion"
-loadModule=`brew info php@7.4 | grep LoadModule | xargs`
+loadModule=`brew info php@$phpVersion | grep LoadModule | xargs`
 echo "Add load module $loadModule"
 
 # Disable all php_module expect the selected one
@@ -58,5 +58,6 @@ fi
 
 echo "Restarting apache"
 sudo apachectl -k restart
+echo "You can check the config at http://localhost/info.php"
 echo "Opening new $SHELL instance in order to update the path"
 $SHELL
