@@ -33,12 +33,11 @@ for phpVersion in $phpVersions; do
         fi
     done
 
-    installedPhpVersions=`ls ~/.phpbrew/php`
-    for installedPhpVersion in $installedPhpVersions; do
-        versionNumber=`echo $installedPhpVersion | sed "s/php-//"`
+    installedPhpVersions=`brew list | grep php | sed s_\ __g | sed s_php@__g`
+    for versionNumber in $installedPhpVersions; do
         minimalVersion=`echo $versionNumber | sed "s/\.//g" | cut -c 1-2`
         if test $minimalVersion -eq $phpVersion; then
-            iniPath="~/.phpbrew/php/$installedPhpVersion/etc/php.ini"
+            iniPath="/usr/local/etc/php/$versionNumber/php.ini"
             if test -f $iniPath; then
                 cat $iniPath | grep blackfire.so > /dev/null
                 hasBlackfire=$?

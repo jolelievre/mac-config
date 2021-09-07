@@ -23,8 +23,8 @@ WARNING: between each step it might be recommended to reboot your computer so th
 - create basic folders with sites-enable/sites-available
 
 # install/04-php.sh
-- install phpbrew
-- install php-5.6 php-7.1 php-7.2
+- upgrade brew and dependencies
+- install 5.6 7.0 7.1 7.2 7.3 7.4 8.0
 - install script sphp
 - install composer
 - restart Apache
