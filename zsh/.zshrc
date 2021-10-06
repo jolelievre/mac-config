@@ -30,6 +30,13 @@ export ZSH="$HOME/.oh-my-zsh"
 # See https://github.com/robbyrussell/oh-my-zsh/wiki/Themes
 ZSH_THEME="jolimbo"
 
+# Handle NVM config
+export NVM_DIR=~/.nvm
+nvmSource=$(brew --prefix nvm)/nvm.sh
+if test -f $nvmSource; then
+    source $nvmSource
+fi
+
 # Set list of themes to load
 # Setting this variable when ZSH_THEME=random
 # cause zsh load theme from this variable instead of
