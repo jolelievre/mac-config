@@ -21,6 +21,7 @@ export PATH=/usr/local/opt/apr-util/bin:$PATH
 export PATH=/usr/local/opt/httpd/bin:$PATH
 export PATH=/usr/local/opt/php/bin:$PATH
 export PATH=/usr/local/opt/php/sbin:$PATH
+export PATH=/usr/local/opt/python/libexec/bin:$PATH
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"
