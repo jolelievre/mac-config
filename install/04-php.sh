@@ -7,6 +7,9 @@ BASEDIR=$(dirname "$0")
 source $BASEDIR/../tools/tools.sh
 source $BASEDIR/../tools/brew.sh
 
+echo "Remove global link which can mess with install process"
+rm -f /usr/local/opt/php
+
 echo "Update brew"
 brew update
 echo "Upgrade brew"
@@ -28,7 +31,7 @@ done
 if test $# -gt 0; then
     phpVersions=$1
 else
-    phpVersions="5.6 7.0 7.1 7.2 7.3 7.4 8.0"
+    phpVersions="5.6 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2"
 fi
 
 lastInstalledVersion=''
@@ -85,7 +88,7 @@ done
 if test ! -f ~/dev/scripts/sphp.sh; then
     echo Install sPHP
     mkdir -p ~/dev/scripts
-    cp $BASEDIR/../scripts/sphp.sh ~/dev/scripts/sphp.sh
+    ln -s $BASEDIR/../scripts/sphp.sh ~/dev/scripts/sphp.sh
 fi
 
 if test ! -f /usr/local/bin/composer; then

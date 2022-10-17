@@ -3,8 +3,7 @@
 script=`basename "$0"`
 
 # Display Usage
-lastStableVersion=8.0
-phpVersions=`brew list | grep php | sed s_\ __g | sed s_php@__g | sed s_php_${lastStableVersion}_g`
+phpVersions=`ls /usr/local/opt/ | grep php@ | sed s_php@__g`
 if [ $# -ne 1 ]; then
     echo "Usage: $script {php_version}"
     echo
@@ -31,7 +30,9 @@ if [ $matchedVersion -ne 1 ]; then
 fi
 
 echo "Switching php cli version to $phpVersion"
-brew link --overwrite --force php@$phpVersion
+brew unlink php
+brew unlink php@$phpVersion
+brew link --overwrite --force shivammathur/php/php@$phpVersion
 
 echo Updating global php symlink
 rm -f /usr/local/opt/php
