@@ -23,4 +23,13 @@ nvm install 14
 nvm use 14
 npm i -g npm
 
+echo Install node16 and update npm
+nvm install 16
+nvm use 16
+npm i -g npm
+
+echo Use node 14 by default
 nvm alias default 14
+
+echo Install ni tools
+npm i -g @antfu/ni
