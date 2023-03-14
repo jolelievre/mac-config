@@ -1,2 +1,2 @@
-UPDATE mysql.user SET Password=PASSWORD('') WHERE User='root';
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '';
 FLUSH PRIVILEGES;
