@@ -53,8 +53,8 @@ for phpVersion in $phpVersions; do
     mv $switchFile $iniFile
 
     echo Switch to $lastInstalledVersion
-    rm -f /usr/local/opt/php
-    ln -s /usr/local/opt/php@$phpVersion /usr/local/opt/php
+    brew unlink php@$lastInstalledVersion
+    brew link --overwrite --force shivammathur/php/php@$lastInstalledVersion
 
     # Install appropriate version of xdebug
     if test $phpVersion == '5.6'; then
@@ -83,12 +83,18 @@ for phpVersion in $phpVersions; do
     xdebugIniFile="/usr/local/etc/php/$lastInstalledVersion/conf.d/xdebug.ini"
     echo "Set default xdebug config from $xdebugIniDistFile"
     cat $xdebugIniDistFile > $xdebugIniFile
+
+    # Set PHP fpm config
+    USERNAME=$(users)
+    echo Prepare PHP FPM default config
+    sed "s+{USERNAME}+$USERNAME+" $BASEDIR/../php/php.www.conf.dist > /usr/local/etc/php/$lastInstalledVersion/php-fpm.d/www.conf
 done
 
 if test ! -f ~/dev/scripts/sphp.sh; then
     echo Install sPHP
     mkdir -p ~/dev/scripts
-    ln -s $BASEDIR/../scripts/sphp.sh ~/dev/scripts/sphp.sh
+    scriptDir=`cd $BASEDIR/../scripts && pwd`
+    ln -s $scriptDir/sphp.sh ~/dev/scripts/sphp.sh
 fi
 
 if test ! -f /usr/local/bin/composer; then
