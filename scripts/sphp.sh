@@ -29,22 +29,70 @@ if [ $matchedVersion -ne 1 ]; then
     exit 1
 fi
 
+if test -f /usr/local/opt/php; then
+    echo Remove default php symlink
+    rm /usr/local/opt/php
+fi
+
 echo "Switching php cli version to $phpVersion"
-brew unlink php
-brew unlink php@$phpVersion
 brew link --overwrite --force shivammathur/php/php@$phpVersion
 
-echo Updating global php symlink
-rm -f /usr/local/opt/php
-ln -s /usr/local/opt/php@$phpVersion /usr/local/opt/php
+read -p "Use PHP FPM? [y/N] " useFPM
+# Empty value is default value which is develop
+if test "$useFPM" = "y"; then
+    useFPM=1
+else
+    useFPM=0
+fi
 
-echo "Switching apache module version to $phpVersion"
-loadModule=`brew info php@$phpVersion | grep LoadModule | xargs`
-echo "Add load module $loadModule"
+enable_module() {
+    echo Enable module $1
+    cat /usr/local/etc/httpd/httpd.conf | sed "s+^#LoadModule $1+LoadModule $1+g" > /usr/local/etc/httpd/httpd.conf_switch
+    mv /usr/local/etc/httpd/httpd.conf_switch /usr/local/etc/httpd/httpd.conf
+}
 
-# Disable all php_module expect the selected one
+disable_module() {
+    echo Disable module $1
+    cat /usr/local/etc/httpd/httpd.conf | sed "s+^LoadModule $1+#LoadModule $1+g" > /usr/local/etc/httpd/httpd.conf_switch
+    mv /usr/local/etc/httpd/httpd.conf_switch /usr/local/etc/httpd/httpd.conf
+}
+
+stop_all_fpms () {
+    echo Stopping all FPM services
+    startedFPM=`brew services | grep php@ | grep started | cut -d' ' -f 1`
+    for fpmVersion in $startedFPM; do
+        brew services stop $fpmVersion
+    done
+}
+
+stop_all_fpms
+
 cp /usr/local/etc/httpd/httpd.conf /usr/local/etc/httpd/httpd.conf_bac
-cat /usr/local/etc/httpd/httpd.conf | sed '/^LoadModule php/d' | awk "/LoadModule rewrite_module.*/{print;print \"$loadModule\";next}1" > /usr/local/etc/httpd/httpd.conf_switch
+if test $useFPM = 1; then
+    echo Use PHP FPM
+
+    disable_module mpm_prefork_module
+    enable_module mpm_event_module
+    enable_module proxy_module
+    enable_module proxy_fcgi_module
+
+    # Remove all php modules
+    cat /usr/local/etc/httpd/httpd.conf | sed '/LoadModule php/d' > /usr/local/etc/httpd/httpd.conf_switch
+else
+    echo Use PHP module
+
+    enable_module mpm_prefork_module
+    disable_module mpm_event_module
+    disable_module proxy_module
+    disable_module proxy_fcgi_module
+
+    echo "Switching apache module version to $phpVersion"
+    loadModule=`brew info php@$phpVersion | grep LoadModule | xargs`
+    echo "Add load module $loadModule"
+
+    # Disable all php_module expect the selected one
+    cat /usr/local/etc/httpd/httpd.conf | sed '/^LoadModule php/d' | awk "/LoadModule rewrite_module.*/{print;print \"$loadModule\";next}1" > /usr/local/etc/httpd/httpd.conf_switch
+fi
 mv /usr/local/etc/httpd/httpd.conf_switch /usr/local/etc/httpd/httpd.conf
 
 apachectl configtest
@@ -54,6 +102,10 @@ if [ $? -ne 0 ]; then
     exit 1
 fi
 
+if test $useFPM = 1; then
+    brew services start php@$phpVersion
+fi
+
 echo "Restarting apache"
 sudo apachectl -k stop
 sleep 1
@@ -61,6 +113,3 @@ sudo apachectl -k start
 
 echo
 echo "You can check the config at http://localhost/info.php"
-echo
-echo "Opening new $SHELL instance in order to update the path"
-$SHELL
