@@ -12,6 +12,9 @@ alias sphp='~/dev/scripts/sphp.sh'
 alias mphp='php -d memory_limit=-1'
 alias mcomposer='mphp `which composer`'
 
+# Mysql switch alias
+alias smysql='~/dev/scripts/smysql.sh'
+
 # Prestashop install alias
 if test -f ~/dev/ps-install-tools/aliases.sh; then
     source ~/dev/ps-install-tools/aliases.sh

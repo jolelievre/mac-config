@@ -7,6 +7,7 @@ export PATH=$HOME/bin:$PATH
 export PATH=/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$PATH
 
 # These are brew dependencies keg only which need path override to be used correctly
+export PATH="/usr/local/sbin:$PATH"
 export PATH=/usr/local/opt/icu4c/bin:$PATH
 export PATH=/usr/local/opt/icu4c/sbin:$PATH
 export PATH=/usr/local/opt/node@10/bin:$PATH
@@ -19,8 +20,6 @@ export PATH=/usr/local/opt/libiconv/bin:$PATH
 export PATH=/usr/local/opt/apr/bin:$PATH
 export PATH=/usr/local/opt/apr-util/bin:$PATH
 export PATH=/usr/local/opt/httpd/bin:$PATH
-export PATH=/usr/local/opt/php/bin:$PATH
-export PATH=/usr/local/opt/php/sbin:$PATH
 export PATH=/usr/local/opt/python/libexec/bin:$PATH
 
 # Path to your oh-my-zsh installation.
