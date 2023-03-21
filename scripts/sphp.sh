@@ -29,7 +29,7 @@ if [ $matchedVersion -ne 1 ]; then
     exit 1
 fi
 
-if test -f /usr/local/opt/php; then
+if test -h /usr/local/opt/php; then
     echo Remove default php symlink
     rm /usr/local/opt/php
 fi
