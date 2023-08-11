@@ -28,8 +28,8 @@ nvm install 16
 nvm use 16
 npm i -g npm
 
-echo Use node 14 by default
-nvm alias default 14
+echo Use node 16 by default
+nvm alias default 16
 
 echo Install ni tools
 npm i -g @antfu/ni
