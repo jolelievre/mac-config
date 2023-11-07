@@ -35,6 +35,9 @@ if test -h /usr/local/opt/php; then
 fi
 
 echo "Switching php cli version to $phpVersion"
+brew unlink shivammathur/php/php@$phpVersion
+brew unlink php@$phpVersion
+brew unlink php
 brew link --overwrite --force shivammathur/php/php@$phpVersion
 
 read -p "Use PHP FPM? [y/N] " useFPM
