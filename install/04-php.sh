@@ -97,6 +97,13 @@ if test ! -f ~/dev/scripts/sphp.sh; then
     ln -s $scriptDir/sphp.sh ~/dev/scripts/sphp.sh
 fi
 
+if test ! -f ~/dev/scripts/xdebug-toggle.sh; then
+    echo Install XdebugToggle
+    mkdir -p ~/dev/scripts
+    scriptDir=`cd $BASEDIR/../scripts && pwd`
+    ln -s $scriptDir/xdebug-toggle.sh ~/dev/scripts/xdebug-toggle.sh
+fi
+
 if test ! -f /usr/local/bin/composer; then
     echo Install composer
     brew install composer
