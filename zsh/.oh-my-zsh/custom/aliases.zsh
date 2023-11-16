@@ -11,8 +11,8 @@ alias gl="git log --graph --all --decorate"
 alias sphp='~/dev/scripts/sphp.sh'
 alias mphp='php -d memory_limit=-1'
 alias mcomposer='mphp `which composer`'
-alias xdebug-enable='~/dev/scripts/xdebug-toggle.sh on'
-alias xdebug-disable='~/dev/scripts/xdebug-toggle.sh off'
+alias php-ext-enable='~/dev/scripts/php-extension-toggle.sh on'
+alias php-ext-disable='~/dev/scripts/php-extension-toggle.sh off'
 
 # Mysql switch alias
 alias smysql='~/dev/scripts/smysql.sh'

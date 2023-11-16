@@ -97,11 +97,11 @@ if test ! -f ~/dev/scripts/sphp.sh; then
     ln -s $scriptDir/sphp.sh ~/dev/scripts/sphp.sh
 fi
 
-if test ! -f ~/dev/scripts/xdebug-toggle.sh; then
-    echo Install XdebugToggle
+if test ! -f ~/dev/scripts/php-extension-toggle.sh; then
+    echo Install PHP Extension Toggle tool
     mkdir -p ~/dev/scripts
     scriptDir=`cd $BASEDIR/../scripts && pwd`
-    ln -s $scriptDir/xdebug-toggle.sh ~/dev/scripts/xdebug-toggle.sh
+    ln -s $scriptDirphp-extension-toggle.sh ~/dev/scripts/php-extension-toggle.sh
 fi
 
 if test ! -f /usr/local/bin/composer; then
