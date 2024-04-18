@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 if test ! -f /opt/homebrew/opt/nvm; then
     echo Install nvm
@@ -33,3 +33,6 @@ nvm alias default 16
 
 echo Install ni tools
 npm i -g @antfu/ni
+
+echo Reload zshrc to load nvm config
+source ~/.zshrc
