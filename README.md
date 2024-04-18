@@ -6,7 +6,10 @@ Or launch them based on your needs
 
 WARNING: between each step it might be recommended to reboot your computer so that installed libraries are correctly used
 
-# install/01-brew.sh
+# install/01-xcode.sh
+- xcode
+
+# install/01.1-brew.sh
 - brew
 
 # install/02-zsh.sh
