@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/zsh
 
 BASEDIR=$(dirname "$0")
 
