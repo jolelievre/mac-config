@@ -3,12 +3,12 @@
 BASEDIR=$(dirname "$0")
 
 brew tap blackfireio/homebrew-blackfire
-if test ! -d /usr/local/Cellar/blackfire; then
+if test ! -d /opt/homebrew/Cellar/blackfire; then
     brew install blackfire
 fi
 
 # Register agent config
-if [ -f /usr/local/etc/blackfire/agent ]; then
+if [ -f /opt/homebrew/etc/blackfire/agent ]; then
   echo Blackfire agent config already present, to reconfigure it please run: blackfire agent:config
 else
   blackfire agent:config
@@ -28,7 +28,7 @@ fi
 # phpVersions="56 71 72 73 74 80 81 82"
 phpVersions="74 80 81 82"
 for phpVersion in $phpVersions; do
-    blackfireDir="/usr/local/Cellar/blackfire-php$phpVersion"
+    blackfireDir="/opt/homebrew/Cellar/blackfire-php$phpVersion"
     if test ! -d $blackfireDir; then
         brew install blackfire-php$phpVersion
     fi
@@ -47,7 +47,7 @@ for phpVersion in $phpVersions; do
 #    for versionNumber in $installedPhpVersions; do
 #        minimalVersion=`echo $versionNumber | sed "s/\.//g" | cut -c 1-2`
 #        if test $minimalVersion -eq $phpVersion; then
-#            iniPath="/usr/local/etc/php/$versionNumber/php.ini"
+#            iniPath="/opt/homebrew/etc/php/$versionNumber/php.ini"
 #            if test -f $iniPath; then
 #                cat $iniPath | grep blackfire.so > /dev/null
 #                hasBlackfire=$?

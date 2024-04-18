@@ -3,12 +3,12 @@
 # The following steps come from this tutorial
 # https://getgrav.org/blog/macos-mojave-apache-multiple-php-versions
 
-if test ! -d /usr/local/Cellar/openldap; then
+if test ! -d /opt/homebrew/Cellar/openldap; then
     echo Install openldap dependency
     brew install openldap
 fi
 
-if test ! -d /usr/local/Cellar/libiconv; then
+if test ! -d /opt/homebrew/Cellar/libiconv; then
     echo Install libiconv dependency
     brew install libiconv
 fi
@@ -17,7 +17,7 @@ echo Uninstall pre installed apache
 sudo apachectl stop
 sudo launchctl unload -w /System/Library/LaunchDaemons/org.apache.httpd.plist
 
-if test ! -f /usr/local/bin/httpd; then
+if test ! -f /opt/homebrew/bin/httpd; then
     echo Install Apache with brew
     brew install httpd
 fi
@@ -49,16 +49,16 @@ BASEDIR=$(dirname "$0")
 USERNAME=$(users)
 
 echo Prepare Apache default config
-sed "s+{USERNAME}+$USERNAME+" $BASEDIR/../apache/httpd.conf > /usr/local/etc/httpd/httpd.conf
-if test ! -d /usr/local/etc/httpd/extra/sites-available; then
-    mkdir -p /usr/local/etc/httpd/extra/sites-available
+sed "s+{USERNAME}+$USERNAME+" $BASEDIR/../apache/httpd.conf > /opt/homebrew/etc/httpd/httpd.conf
+if test ! -d /opt/homebrew/etc/httpd/extra/sites-available; then
+    mkdir -p /opt/homebrew/etc/httpd/extra/sites-available
 fi
-if test ! -d /usr/local/etc/httpd/extra/sites-enabled; then
-    mkdir -p /usr/local/etc/httpd/extra/sites-enabled
+if test ! -d /opt/homebrew/etc/httpd/extra/sites-enabled; then
+    mkdir -p /opt/homebrew/etc/httpd/extra/sites-enabled
 fi
 
 echo Prepare Apache default Vhost
-sed "s+{USERNAME}+$USERNAME+" $BASEDIR/../apache/extra/httpd-vhosts.conf > /usr/local/etc/httpd/extra/httpd-vhosts.conf
+sed "s+{USERNAME}+$USERNAME+" $BASEDIR/../apache/extra/httpd-vhosts.conf > /opt/homebrew/etc/httpd/extra/httpd-vhosts.conf
 
 echo Test config
 apachectl -t || exit 1

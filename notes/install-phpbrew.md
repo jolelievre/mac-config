@@ -15,9 +15,9 @@ phpbrew ext install xdebug
 phpbrew ext install gd \
 -- --with-gd=shared \
 --enable-gd-native-ttf \
---with-jpeg-dir=/usr/local/opt/libjpg/ \
---with-png-dir=/usr/local/opt/libpng/ \
---with-zlib-dir=/usr/local/opt/zlib/
+--with-jpeg-dir=/opt/homebrew/opt/libjpg/ \
+--with-png-dir=/opt/homebrew/opt/libpng/ \
+--with-zlib-dir=/opt/homebrew/opt/zlib/
 
 phpbrew ext install iconv
 

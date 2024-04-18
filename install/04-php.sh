@@ -8,7 +8,7 @@ source $BASEDIR/../tools/tools.sh
 source $BASEDIR/../tools/brew.sh
 
 echo "Remove global link which can mess with install process"
-rm -f /usr/local/opt/php
+rm -f /opt/homebrew/opt/php
 
 echo "Update brew"
 brew update
@@ -22,7 +22,7 @@ brew tap shivammathur/php
 
 dependencies="automake autoconf curl pcre re2c mhash libtool freetype icu4c gettext libpng jpeg libxml2 mcrypt gmp libevent openssl bzip2 zlib libiconv libzip pkg-config oniguruma gd libxpm"
 for dependency in $dependencies; do
-    if test ! -d /usr/local/Cellar/$dependency; then
+    if test ! -d /opt/homebrew/Cellar/$dependency; then
         echo Install dependency $dependency
         brew install $dependency
     fi
@@ -47,8 +47,8 @@ for phpVersion in $phpVersions; do
     fi
 
     echo "Set default config"
-    iniFile=/usr/local/etc/php/$lastInstalledVersion/php.ini
-    switchFile=/usr/local/etc/php/$lastInstalledVersion/php.ini_switch
+    iniFile=/opt/homebrew/etc/php/$lastInstalledVersion/php.ini
+    switchFile=/opt/homebrew/etc/php/$lastInstalledVersion/php.ini_switch
     cat $iniFile | sed "s/^memory_limit\(.*\)$/memory_limit\ =\ 512M/g" > $switchFile
     mv $switchFile $iniFile
 
@@ -80,14 +80,14 @@ for phpVersion in $phpVersions; do
     mv $switchFile $iniFile
 
     # Set default xdebug config
-    xdebugIniFile="/usr/local/etc/php/$lastInstalledVersion/conf.d/xdebug.ini"
+    xdebugIniFile="/opt/homebrew/etc/php/$lastInstalledVersion/conf.d/xdebug.ini"
     echo "Set default xdebug config from $xdebugIniDistFile"
     cat $xdebugIniDistFile > $xdebugIniFile
 
     # Set PHP fpm config
     USERNAME=$(users)
     echo Prepare PHP FPM default config
-    sed "s+{USERNAME}+$USERNAME+" $BASEDIR/../php/php.www.conf.dist > /usr/local/etc/php/$lastInstalledVersion/php-fpm.d/www.conf
+    sed "s+{USERNAME}+$USERNAME+" $BASEDIR/../php/php.www.conf.dist > /opt/homebrew/etc/php/$lastInstalledVersion/php-fpm.d/www.conf
 done
 
 if test ! -f ~/dev/scripts/sphp.sh; then
@@ -104,7 +104,7 @@ if test ! -f ~/dev/scripts/php-extension-toggle.sh; then
     ln -s $scriptDirphp-extension-toggle.sh ~/dev/scripts/php-extension-toggle.sh
 fi
 
-if test ! -f /usr/local/bin/composer; then
+if test ! -f /opt/homebrew/bin/composer; then
     echo Install composer
     brew install composer
     composer config --global process-timeout 2000

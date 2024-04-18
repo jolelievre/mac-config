@@ -1,4 +1,4 @@
-export PATH=/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin
+export PATH=/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin
 
 # If you come from bash you might have to change your $PATH.
 export PATH=$HOME/bin:$PATH
@@ -11,19 +11,19 @@ eval "$(/opt/homebrew/bin/brew shellenv)"
 
 # These are brew dependencies keg only which need path override to be used correctly
 export PATH="/usr/local/sbin:$PATH"
-export PATH=/usr/local/opt/icu4c/bin:$PATH
-export PATH=/usr/local/opt/icu4c/sbin:$PATH
-export PATH=/usr/local/opt/node@10/bin:$PATH
-export PATH=/usr/local/opt/gnu-getopt/bin:$PATH
-export PATH=/usr/local/opt/ruby/bin:$PATH
-export PATH=/usr/local/opt/openssl/bin:$PATH
-export PATH=/usr/local/opt/openldap/bin:$PATH
-export PATH=/usr/local/opt/openldap/sbin:$PATH
-export PATH=/usr/local/opt/libiconv/bin:$PATH
-export PATH=/usr/local/opt/apr/bin:$PATH
-export PATH=/usr/local/opt/apr-util/bin:$PATH
-export PATH=/usr/local/opt/httpd/bin:$PATH
-export PATH=/usr/local/opt/python/libexec/bin:$PATH
+export PATH=/opt/homebrew/opt/icu4c/bin:$PATH
+export PATH=/opt/homebrew/opt/icu4c/sbin:$PATH
+export PATH=/opt/homebrew/opt/node@10/bin:$PATH
+export PATH=/opt/homebrew/opt/gnu-getopt/bin:$PATH
+export PATH=/opt/homebrew/opt/ruby/bin:$PATH
+export PATH=/opt/homebrew/opt/openssl/bin:$PATH
+export PATH=/opt/homebrew/opt/openldap/bin:$PATH
+export PATH=/opt/homebrew/opt/openldap/sbin:$PATH
+export PATH=/opt/homebrew/opt/libiconv/bin:$PATH
+export PATH=/opt/homebrew/opt/apr/bin:$PATH
+export PATH=/opt/homebrew/opt/apr-util/bin:$PATH
+export PATH=/opt/homebrew/opt/httpd/bin:$PATH
+export PATH=/opt/homebrew/opt/python/libexec/bin:$PATH
 export PATH="$HOME/.symfony5/bin:$PATH"
 
 # Path to your oh-my-zsh installation.

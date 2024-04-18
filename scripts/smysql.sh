@@ -3,7 +3,7 @@
 script=`basename "$0"`
 
 # Display Usage
-mysqlVersions=`ls /usr/local/opt/ | grep mysql@ | sed s_mysql@__g`
+mysqlVersions=`ls /opt/homebrew/opt/ | grep mysql@ | sed s_mysql@__g`
 if [ $# -ne 1 ]; then
     echo "Usage: $script {mysql_version}"
     echo

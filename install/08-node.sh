@@ -1,6 +1,6 @@
 #!/bin/sh
 
-if test ! -f /usr/local/opt/nvm; then
+if test ! -f /opt/homebrew/opt/nvm; then
     echo Install nvm
     brew install nvm
 fi

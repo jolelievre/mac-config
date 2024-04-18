@@ -15,10 +15,10 @@ for mysqlVersion in $mysqlVersions; do
 
     plistPath="$mysqlPath/homebrew.mxcl.mysql@$mysqlVersion.plist"
     echo Updating folder in $plistPath
-    cat $plistPath | sed "s_/usr/local/var/mysql</string>_/usr/local/var/mysql${mysqlVersion}</string>_g" > $plistPath.tmp
+    cat $plistPath | sed "s_/opt/homebrew/var/mysql</string>_/opt/homebrew/var/mysql${mysqlVersion}</string>_g" > $plistPath.tmp
     mv $plistPath.tmp $plistPath
 
-    mysqlFolder="/usr/local/var/mysql$mysqlVersion"
+    mysqlFolder="/opt/homebrew/var/mysql$mysqlVersion"
     if test ! -d $mysqlFolder; then
         echo Create Mysql folder $mysqlFolder
         mkdir $mysqlFolder

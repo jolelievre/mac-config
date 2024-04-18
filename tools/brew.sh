@@ -49,7 +49,7 @@ function install_old_brew_package() {
     local package_name=$1
     local package_version=$2
 
-    if test -d "/usr/local/opt/$package_name@$package_version"; then
+    if test -d "/opt/homebrew/opt/$package_name@$package_version"; then
         echo "Seems like $package_name version $package_version is already installed"
         return
     fi

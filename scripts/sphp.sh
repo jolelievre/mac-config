@@ -3,7 +3,7 @@
 script=`basename "$0"`
 
 # Display Usage
-phpVersions=`ls /usr/local/opt/ | grep php@ | sed s_php@__g`
+phpVersions=`ls /opt/homebrew/opt/ | grep php@ | sed s_php@__g`
 if [ $# -ne 1 ]; then
     echo "Usage: $script {php_version}"
     echo
@@ -29,9 +29,9 @@ if [ $matchedVersion -ne 1 ]; then
     exit 1
 fi
 
-if test -h /usr/local/opt/php; then
+if test -h /opt/homebrew/opt/php; then
     echo Remove default php symlink
-    rm /usr/local/opt/php
+    rm /opt/homebrew/opt/php
 fi
 
 echo "Switching php cli version to $phpVersion"
@@ -50,14 +50,14 @@ fi
 
 enable_module() {
     echo Enable module $1
-    cat /usr/local/etc/httpd/httpd.conf | sed "s+^#LoadModule $1+LoadModule $1+g" > /usr/local/etc/httpd/httpd.conf_switch
-    mv /usr/local/etc/httpd/httpd.conf_switch /usr/local/etc/httpd/httpd.conf
+    cat /opt/homebrew/etc/httpd/httpd.conf | sed "s+^#LoadModule $1+LoadModule $1+g" > /opt/homebrew/etc/httpd/httpd.conf_switch
+    mv /opt/homebrew/etc/httpd/httpd.conf_switch /opt/homebrew/etc/httpd/httpd.conf
 }
 
 disable_module() {
     echo Disable module $1
-    cat /usr/local/etc/httpd/httpd.conf | sed "s+^LoadModule $1+#LoadModule $1+g" > /usr/local/etc/httpd/httpd.conf_switch
-    mv /usr/local/etc/httpd/httpd.conf_switch /usr/local/etc/httpd/httpd.conf
+    cat /opt/homebrew/etc/httpd/httpd.conf | sed "s+^LoadModule $1+#LoadModule $1+g" > /opt/homebrew/etc/httpd/httpd.conf_switch
+    mv /opt/homebrew/etc/httpd/httpd.conf_switch /opt/homebrew/etc/httpd/httpd.conf
 }
 
 stop_all_fpms () {
@@ -70,7 +70,7 @@ stop_all_fpms () {
 
 stop_all_fpms
 
-cp /usr/local/etc/httpd/httpd.conf /usr/local/etc/httpd/httpd.conf_bac
+cp /opt/homebrew/etc/httpd/httpd.conf /opt/homebrew/etc/httpd/httpd.conf_bac
 if test $useFPM = 1; then
     echo Use PHP FPM
 
@@ -80,7 +80,7 @@ if test $useFPM = 1; then
     enable_module proxy_fcgi_module
 
     # Remove all php modules
-    cat /usr/local/etc/httpd/httpd.conf | sed '/LoadModule php/d' > /usr/local/etc/httpd/httpd.conf_switch
+    cat /opt/homebrew/etc/httpd/httpd.conf | sed '/LoadModule php/d' > /opt/homebrew/etc/httpd/httpd.conf_switch
 else
     echo Use PHP module
 
@@ -94,14 +94,14 @@ else
     echo "Add load module $loadModule"
 
     # Disable all php_module expect the selected one
-    cat /usr/local/etc/httpd/httpd.conf | sed '/^LoadModule php/d' | awk "/LoadModule rewrite_module.*/{print;print \"$loadModule\";next}1" > /usr/local/etc/httpd/httpd.conf_switch
+    cat /opt/homebrew/etc/httpd/httpd.conf | sed '/^LoadModule php/d' | awk "/LoadModule rewrite_module.*/{print;print \"$loadModule\";next}1" > /opt/homebrew/etc/httpd/httpd.conf_switch
 fi
-mv /usr/local/etc/httpd/httpd.conf_switch /usr/local/etc/httpd/httpd.conf
+mv /opt/homebrew/etc/httpd/httpd.conf_switch /opt/homebrew/etc/httpd/httpd.conf
 
 apachectl configtest
 if [ $? -ne 0 ]; then
     echo "Error: invalid apache syntax, restoring backup"
-    cp /usr/local/etc/httpd/httpd.conf_bac /usr/local/etc/httpd/httpd.conf
+    cp /opt/homebrew/etc/httpd/httpd.conf_bac /opt/homebrew/etc/httpd/httpd.conf
     exit 1
 fi
 
