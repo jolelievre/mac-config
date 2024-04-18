@@ -14,6 +14,9 @@ alias mcomposer='mphp `which composer`'
 alias php-ext-enable='~/dev/scripts/php-extension-toggle.sh on'
 alias php-ext-disable='~/dev/scripts/php-extension-toggle.sh off'
 
+# Bat
+alias cat='bat'
+
 # Mysql switch alias
 alias smysql='~/dev/scripts/smysql.sh'
 

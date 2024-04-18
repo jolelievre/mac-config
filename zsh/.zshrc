@@ -6,6 +6,9 @@ export PATH=$HOME/bin:$PATH
 # This allows to use VSCode as cli with "code" command
 export PATH=/Applications/Visual\ Studio\ Code.app/Contents/Resources/app/bin:$PATH
 
+# This adds brew to the path
+eval "$(/opt/homebrew/bin/brew shellenv)"
+
 # These are brew dependencies keg only which need path override to be used correctly
 export PATH="/usr/local/sbin:$PATH"
 export PATH=/usr/local/opt/icu4c/bin:$PATH
@@ -93,7 +96,7 @@ fi
 plugins=(
     git
     composer
-    symfony2
+    chucknorris
 )
 
 source $ZSH/oh-my-zsh.sh
@@ -128,5 +131,11 @@ export EDITOR="emacs"
 # alias zshconfig="mate ~/.zshrc"
 # alias ohmyzsh="mate ~/.oh-my-zsh"
 
+# Bat theme
+export BAT_THEME='Dracula'
+
 # Enable zsh syntax highlighting
-source /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source /opt/homebrew/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Fuzzy search (ctrl+r)
+eval "$(fzf --zsh)"

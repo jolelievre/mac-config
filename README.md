@@ -52,13 +52,27 @@ WARNING: between each step it might be recommended to reboot your computer so th
 - Init default setting with client id, server id, token, ...
 - Install PHP probe extension for all installed PHP versions
 
+# install/10-symfony.sh
+- Symfony installer command
+
+# install/11-ruby.sh
+- Install ruby
+
+# install/12-hugo.sh
+- Install hugo
+
+# install/13-python.sh
+- Install python
+
+# install/14-dev-apps.sh
+- Sequel ACE
+- PHPStorm
+- Visual Studio Code
+- iTerm2
+- Insomnium
+
 Applications
 - iTerm2 (Go to Settings > General > Load preferences from a custom folder or URL > select this repo iterm2 folder)
 - Chrome (AdBlock Plus, JSON viewer, Blackfire companion)
-- PHPStorm
-- Sequel Pro
-- Postman
 - Slack
-- Gitter
-- Visual Studio Code
 - Libre Office

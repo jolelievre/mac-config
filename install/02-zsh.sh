@@ -53,3 +53,14 @@ if test ! -f /usr/local/bin/emacs; then
     echo Install emacs
     brew install emacs
 fi
+
+# Dependencies for chuck norris plugin
+brew install fortune
+brew install cowthink
+
+# Fuzzy find
+brew install fzf
+
+# Bat, hyper cat
+brew install bat
+mkdir -p "$(bat --config-dir)/themes"
