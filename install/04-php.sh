@@ -31,7 +31,8 @@ done
 if test $# -gt 0; then
     phpVersions=$1
 else
-    phpVersions="5.6 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2 8.3"
+    #phpVersions="5.6 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2 8.3"
+    phpVersions="7.4 8.0 8.1 8.2 8.3"
 fi
 
 lastInstalledVersion=''
@@ -101,7 +102,7 @@ if test ! -f ~/dev/scripts/php-extension-toggle.sh; then
     echo Install PHP Extension Toggle tool
     mkdir -p ~/dev/scripts
     scriptDir=`cd $BASEDIR/../scripts && pwd`
-    ln -s $scriptDirphp-extension-toggle.sh ~/dev/scripts/php-extension-toggle.sh
+    ln -s $scriptDir/php-extension-toggle.sh ~/dev/scripts/php-extension-toggle.sh
 fi
 
 if test ! -f /opt/homebrew/bin/composer; then
