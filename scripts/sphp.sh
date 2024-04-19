@@ -110,9 +110,7 @@ if test $useFPM = 1; then
 fi
 
 echo "Restarting apache"
-sudo brew services stop httpd
-sleep 1
-sudo brew services start httpd
+sudo brew services restart httpd
 
 echo
 echo "You can check the config at http://localhost/info.php"
