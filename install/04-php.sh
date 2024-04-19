@@ -98,7 +98,7 @@ for phpVersion in $phpVersions; do
     # Set PHP fpm config
     USERNAME=$(users)
     echo Prepare PHP FPM default config
-    mdir -p /opt/homebrew/etc/php/$lastInstalledVersion/php-fpm.d/www.conf
+    mkdir -p /opt/homebrew/etc/php/$lastInstalledVersion/php-fpm.d/www.conf
     fpmIniFile=/opt/homebrew/etc/php/$lastInstalledVersion/php-fpm.d/www.conf
     sed "s+{USERNAME}+$USERNAME+" $BASEDIR/../php/php.www.conf.dist > $fpmIniFile
 done
