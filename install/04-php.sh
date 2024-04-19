@@ -47,11 +47,21 @@ for phpVersion in $phpVersions; do
         continue
     fi
 
+    echo Create config folder
+    mkdir -p /opt/homebrew/etc/php/$lastInstalledVersion/conf.d
+
     echo "Set default config"
     iniFile=/opt/homebrew/etc/php/$lastInstalledVersion/php.ini
-    switchFile=/opt/homebrew/etc/php/$lastInstalledVersion/php.ini_switch
-    cat $iniFile | sed "s/^memory_limit\(.*\)$/memory_limit\ =\ 512M/g" > $switchFile
-    mv $switchFile $iniFile
+    if test ! -f $iniFile; then
+        echo Copy base dist INI file to $iniFile
+        iniFileDist=$BASEDIR/../php/php.ini.dist
+        cp $iniFileDist $iniFile
+    else
+        echo Update existing INI file $iniFile
+        switchFile=/opt/homebrew/etc/php/$lastInstalledVersion/php.ini_switch
+        cat $iniFile | sed "s/^memory_limit\(.*\)$/memory_limit\ =\ 512M/g" > $switchFile
+        mv $switchFile $iniFile
+    fi
 
     echo Switch to $lastInstalledVersion
     brew unlink php@$lastInstalledVersion
@@ -88,7 +98,9 @@ for phpVersion in $phpVersions; do
     # Set PHP fpm config
     USERNAME=$(users)
     echo Prepare PHP FPM default config
-    sed "s+{USERNAME}+$USERNAME+" $BASEDIR/../php/php.www.conf.dist > /opt/homebrew/etc/php/$lastInstalledVersion/php-fpm.d/www.conf
+    mdir -p /opt/homebrew/etc/php/$lastInstalledVersion/php-fpm.d/www.conf
+    fpmIniFile=/opt/homebrew/etc/php/$lastInstalledVersion/php-fpm.d/www.conf
+    sed "s+{USERNAME}+$USERNAME+" $BASEDIR/../php/php.www.conf.dist > $fpmIniFile
 done
 
 if test ! -f ~/dev/scripts/sphp.sh; then

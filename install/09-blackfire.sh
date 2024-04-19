@@ -62,4 +62,4 @@ for phpVersion in $phpVersions; do
 done
 
 echo Restart apache
-sudo apachectl restart
+sudo brew services restart httpd

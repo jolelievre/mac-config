@@ -22,7 +22,7 @@ if [ "$1" = 'on' ]; then
   elif [ -f $extensionBackupFile ]; then
     mv $extensionBackupFile $extensionFile
     echo $phpExtension was turned on back again
-    sudo apachectl restart
+    sudo brew services restart httpd
   else
     echo No $phpExtension config was found
   fi 
@@ -33,7 +33,7 @@ else
   elif [ -f $extensionFile ]; then
     mv $extensionFile $extensionBackupFile
     echo $phpExtension was turned off, config is saved at $extensionBackupFile
-    sudo apachectl restart
+    sudo brew services restart httpd
   else
     echo No $phpExtension config was found
   fi
