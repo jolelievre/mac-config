@@ -1,5 +1,8 @@
 #!/bin/zsh
 
+echo Install dependencies
+brew install pkg-config cairo pango libpng jpeg giflib librsvg pixman python-setuptools
+
 if test ! -f /opt/homebrew/opt/nvm; then
     echo Install nvm
     brew install nvm
