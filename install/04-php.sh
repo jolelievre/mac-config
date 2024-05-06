@@ -64,7 +64,10 @@ for phpVersion in $phpVersions; do
     fi
 
     echo Switch to $lastInstalledVersion
+
+    brew unlink shivammathur/php/php@$lastInstalledVersion
     brew unlink php@$lastInstalledVersion
+    brew unlink php
     brew link --overwrite --force shivammathur/php/php@$lastInstalledVersion
 
     # Install appropriate version of xdebug
