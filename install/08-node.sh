@@ -31,8 +31,13 @@ nvm install 16
 nvm use 16
 npm i -g npm
 
-echo Use node 16 by default
-nvm alias default 16
+echo Install node20 and update npm
+nvm install 20
+nvm use 20
+npm i -g npm
+
+echo Use node 20 by default
+nvm alias default 20
 
 echo Install ni tools
 npm i -g @antfu/ni
