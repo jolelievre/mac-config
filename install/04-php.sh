@@ -31,8 +31,8 @@ done
 if test $# -gt 0; then
     phpVersions=$1
 else
-    #phpVersions="5.6 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2 8.3"
-    phpVersions="7.4 8.0 8.1 8.2 8.3"
+    #phpVersions="5.6 7.0 7.1 7.2 7.3 7.4 8.0 8.1 8.2 8.3 8.4"
+    phpVersions="7.4 8.0 8.1 8.2 8.3 8.4"
 fi
 
 lastInstalledVersion=''
