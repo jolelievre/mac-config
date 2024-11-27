@@ -90,7 +90,12 @@ else
     disable_module proxy_fcgi_module
 
     echo "Switching apache module version to $phpVersion"
-    loadModule=`brew info php@$phpVersion | grep LoadModule | xargs`
+    loadModule=`brew info shivammathur/php/php@$phpVersion | grep LoadModule | xargs`
+    loadModulePath=`echo $loadModule | sed 's/LoadModule php_module//'`
+    if [ ! -f $loadModulePath ]; then
+        echo Brew PHP module path invalid switching to default value
+        loadModule="LoadModule php_module /opt/homebrew/opt/php@$phpVersion/lib/httpd/modules/libphp.so"
+    fi
     echo "Add load module $loadModule"
 
     # Disable all php_module expect the selected one
