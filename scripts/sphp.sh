@@ -35,10 +35,24 @@ if test -h /opt/homebrew/opt/php; then
 fi
 
 echo "Switching php cli version to $phpVersion"
-brew unlink shivammathur/php/php@$phpVersion
-brew unlink php@$phpVersion
+for validVersion in $phpVersions; do
+    brew unlink shivammathur/php/php@$validVersion
+    brew unlink php@$validVersion
+done
 brew unlink php
-brew link --overwrite --force shivammathur/php/php@$phpVersion
+
+# Brew uses php to identify the latest stable version (not php@8.3 for example), to dynamically get how brew refers to the targetted
+# version we get the package info and extract it from the load module path
+loadModule=`brew info shivammathur/php/php@$phpVersion | grep LoadModule | xargs`
+brewAliasVersion=`echo $loadModule | sed 's@LoadModule php_module /opt/homebrew/opt/@@' | sed 's@/lib/httpd/modules/libphp.so@@'`
+
+if [ "php" = "$brewAliasVersion" ]; then
+    echo Link PHP to default brew php
+    brew link --overwrite --force php
+else
+    echo Link PHP to shivammathur/php/php@$phpVersion
+    brew link --overwrite --force shivammathur/php/php@$phpVersion
+fi
 
 read -p "Use PHP FPM? [y/N] " useFPM
 # Empty value is default value which is develop
