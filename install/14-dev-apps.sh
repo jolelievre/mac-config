@@ -15,5 +15,5 @@ brew install --cask iterm2
 echo Install insomnium
 brew install --cask insomnium
 
-echo Install docker
-brew install --cask docker
+echo Install orbstack
+brew install --cask orbstack
