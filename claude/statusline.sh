@@ -12,6 +12,7 @@ EFFORT=$(echo "$DATA" | jq -r '.output_style.name // ""')
 DIR=$(echo "$DATA" | jq -r '.workspace.current_dir // ""')
 CTX_INT=$(echo "$DATA" | jq '[.context_window.used_percentage // 0] | .[0] | round')
 RATE_5H=$(echo "$DATA" | jq '.rate_limits.five_hour.used_percentage // empty | round')
+RATE_5H_RESET=$(echo "$DATA" | jq -r '.rate_limits.five_hour.resets_at // empty')
 RATE_7D=$(echo "$DATA" | jq '.rate_limits.seven_day.used_percentage // empty | round')
 
 # Foreground colors
@@ -84,6 +85,20 @@ fi
 # Separator for non-Powerline segments
 SEP="${DIM} | ${RESET}"
 
+# Terminal width for adaptive display (reserve space for Claude's right-side info)
+# Try multiple methods; default to 250 (show everything) if detection fails
+COLS=${COLUMNS:-$(stty size 2>/dev/null | cut -d' ' -f2)}
+COLS=${COLS:-$(tput cols 2>/dev/null)}
+# If all methods return 80 (default fallback), assume we couldn't detect the real
+# width and prefer showing all segments over hiding them
+[ "${COLS:-80}" -le 80 ] 2>/dev/null && COLS=250
+MAX_VIS=$((COLS - 30))
+
+# Measure visible length of a printf '%b' string (strips ANSI escape codes)
+vis_len() {
+  printf '%b' "$1" | sed $'s/\033\[[0-9;]*[a-zA-Z]//g' | wc -m | tr -d ' '
+}
+
 OUT=""
 
 # --- Powerline segments: Dir + Git (matching jolimbo.zsh-theme) ---
@@ -109,29 +124,60 @@ else
   OUT="${OUT}${RESET}${FG_BLUE}${SEP_ARROW}${RESET}"
 fi
 
-# --- Remaining segments (flat style) ---
+# --- Remaining segments (flat style, added only if they fit) ---
 
-# Rate limits (5h progress bar, 7d percent only)
+# Rate limits (progress bar with dynamic remaining time, 7d percent only)
+# Compute remaining time label for 5h window
+RATE_5H_LABEL="--:--"
+if [ -n "$RATE_5H_RESET" ]; then
+  NOW=$(date +%s)
+  REMAINING=$((RATE_5H_RESET - NOW))
+  if [ "$REMAINING" -le 0 ]; then
+    RATE_5H_LABEL="0:00"
+  else
+    REM_H=$((REMAINING / 3600))
+    REM_M=$(( (REMAINING % 3600) / 60 ))
+    RATE_5H_LABEL=$(printf '%d:%02d' "$REM_H" "$REM_M")
+  fi
+elif [ -n "$RATE_5H" ]; then
+  RATE_5H_LABEL="5h"
+fi
+
 if [ -n "$RATE_5H" ]; then
   R5_BAR=$(make_bar "$RATE_5H")
-  RATE_STR="${DIM}5h${RESET} ${R5_BAR}"
+  RATE_SEG="${SEP}${DIM}${RATE_5H_LABEL}${RESET} ${R5_BAR}"
   if [ -n "$RATE_7D" ]; then
     if [ "$RATE_7D" -ge 80 ]; then R7_COLOR="$FG_RED"
     elif [ "$RATE_7D" -ge 50 ]; then R7_COLOR="$FG_YELLOW"
     else R7_COLOR="$FG_GREEN"
     fi
-    RATE_STR="${RATE_STR} ${DIM}7d${RESET} ${R7_COLOR}${RATE_7D}%${RESET}"
+    RATE_SEG="${RATE_SEG} ${DIM}7d${RESET} ${R7_COLOR}${RATE_7D}%${RESET}"
   fi
-  OUT="${OUT}${SEP}${RATE_STR}"
+else
+  # Before first API call: show placeholder
+  RATE_SEG="${SEP}${DIM}--:-- ${FG_CYAN}waiting...${RESET}"
+fi
+
+CANDIDATE="${OUT}${RATE_SEG}"
+if [ "$(vis_len "$CANDIDATE")" -le "$MAX_VIS" ]; then
+  OUT="$CANDIDATE"
 fi
 
 # Context (percent only)
-OUT="${OUT}${SEP}${DIM}ctx${RESET} ${CTX_COLOR}${CTX_INT}%${RESET}"
+CTX_SEG="${SEP}${DIM}ctx${RESET} ${CTX_COLOR}${CTX_INT}%${RESET}"
+CANDIDATE="${OUT}${CTX_SEG}"
+if [ "$(vis_len "$CANDIDATE")" -le "$MAX_VIS" ]; then
+  OUT="$CANDIDATE"
+fi
 
 # Model + effort (at the end)
 if [ -n "$MODEL" ]; then
-  OUT="${OUT}${SEP}${BOLD}${MODEL}${RESET}"
-  [ -n "$EFFORT" ] && OUT="${OUT}${DIM} / ${RESET}${FG_CYAN}${EFFORT}${RESET}"
+  MODEL_SEG="${SEP}${BOLD}${MODEL}${RESET}"
+  [ -n "$EFFORT" ] && MODEL_SEG="${MODEL_SEG}${DIM} / ${RESET}${FG_CYAN}${EFFORT}${RESET}"
+  CANDIDATE="${OUT}${MODEL_SEG}"
+  if [ "$(vis_len "$CANDIDATE")" -le "$MAX_VIS" ]; then
+    OUT="$CANDIDATE"
+  fi
 fi
 
 printf '%b\n' "$OUT"
