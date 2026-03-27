@@ -1,6 +1,6 @@
 #!/bin/sh
 # Install / update Claude Code custom status line
-# Usage: sh claude/install-statusline.sh
+# Usage: sh install/15-claude-statusline.sh
 #
 # What it does:
 #   1. Symlinks statusline.sh into ~/.claude/
@@ -9,7 +9,7 @@
 set -e
 
 SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
-SOURCE="$SCRIPT_DIR/statusline.sh"
+SOURCE="$(cd "$SCRIPT_DIR/../claude" && pwd)/statusline.sh"
 TARGET="$HOME/.claude/statusline.sh"
 SETTINGS="$HOME/.claude/settings.json"
 
