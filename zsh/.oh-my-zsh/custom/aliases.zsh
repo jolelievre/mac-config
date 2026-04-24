@@ -24,3 +24,6 @@ alias smysql='~/dev/scripts/smysql.sh'
 if test -f ~/dev/ps-install-tools/aliases.sh; then
     source ~/dev/ps-install-tools/aliases.sh
 fi
+
+# Claude aliases
+alias claude-spend='npx claude-spend'
