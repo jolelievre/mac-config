@@ -1,8 +1,9 @@
 #!/bin/sh
 # Claude Code custom status line
 # Source: https://github.com/jLelievre/mac-config
-# Reads JSON from stdin, outputs a single colored line
-# Dir + git segments styled after jolimbo.zsh-theme (Powerline)
+# Reads JSON from stdin, outputs two colored lines:
+#   line 1: Claude metrics (rate limits, context, model)
+#   line 2: dir + git branch (Powerline, styled after jolimbo.zsh-theme)
 
 DATA=$(cat)
 
@@ -14,6 +15,7 @@ CTX_INT=$(echo "$DATA" | jq '[.context_window.used_percentage // 0] | .[0] | rou
 RATE_5H=$(echo "$DATA" | jq '.rate_limits.five_hour.used_percentage // empty | round')
 RATE_5H_RESET=$(echo "$DATA" | jq -r '.rate_limits.five_hour.resets_at // empty')
 RATE_7D=$(echo "$DATA" | jq '.rate_limits.seven_day.used_percentage // empty | round')
+RATE_7D_RESET=$(echo "$DATA" | jq -r '.rate_limits.seven_day.resets_at // empty')
 
 # Foreground colors
 RESET='\033[0m'
@@ -85,26 +87,10 @@ fi
 # Separator for non-Powerline segments
 SEP="${DIM} | ${RESET}"
 
-# Terminal width for adaptive display (reserve space for Claude's right-side info)
-# Try multiple methods; default to 250 (show everything) if detection fails
-COLS=${COLUMNS:-$(stty size 2>/dev/null | cut -d' ' -f2)}
-COLS=${COLS:-$(tput cols 2>/dev/null)}
-# If all methods return 80 (default fallback), assume we couldn't detect the real
-# width and prefer showing all segments over hiding them
-[ "${COLS:-80}" -le 80 ] 2>/dev/null && COLS=250
-MAX_VIS=$((COLS - 30))
-
-# Measure visible length of a printf '%b' string (strips ANSI escape codes)
-vis_len() {
-  printf '%b' "$1" | sed $'s/\033\[[0-9;]*[a-zA-Z]//g' | wc -m | tr -d ' '
-}
-
-OUT=""
-
-# --- Powerline segments: Dir + Git (matching jolimbo.zsh-theme) ---
+# --- Line 2: Powerline Dir + Git (matching jolimbo.zsh-theme) ---
 
 # Directory segment: blue bg, black fg
-OUT="${BG_BLUE}${FG_BLACK} ${DIR} "
+LINE2="${BG_BLUE}${FG_BLACK} ${DIR} "
 
 # Transition to git segment or end Powerline
 if [ -n "$BRANCH" ]; then
@@ -116,21 +102,21 @@ if [ -n "$BRANCH" ]; then
     GIT_ARROW_FG="$FG_GREEN"
   fi
   # Arrow from blue to git bg
-  OUT="${OUT}${GIT_BG}${FG_BLUE}${SEP_ARROW}${FG_BLACK} ${BRANCH_ICON} ${BRANCH}"
-  [ -n "$MARKS" ] && OUT="${OUT} ${MARKS}"
-  OUT="${OUT} ${RESET}${GIT_ARROW_FG}${SEP_ARROW}${RESET}"
+  LINE2="${LINE2}${GIT_BG}${FG_BLUE}${SEP_ARROW}${FG_BLACK} ${BRANCH_ICON} ${BRANCH}"
+  [ -n "$MARKS" ] && LINE2="${LINE2} ${MARKS}"
+  LINE2="${LINE2} ${RESET}${GIT_ARROW_FG}${SEP_ARROW}${RESET}"
 else
   # No git: just close the blue segment
-  OUT="${OUT}${RESET}${FG_BLUE}${SEP_ARROW}${RESET}"
+  LINE2="${LINE2}${RESET}${FG_BLUE}${SEP_ARROW}${RESET}"
 fi
 
-# --- Remaining segments (flat style, added only if they fit) ---
+# --- Line 1: Claude metrics (rate limits, context, model) ---
 
-# Rate limits (progress bar with dynamic remaining time, 7d percent only)
-# Compute remaining time label for 5h window
+# Rate limits: compute remaining time labels (shared "now" for both windows)
+NOW=$(date +%s)
+
 RATE_5H_LABEL="--:--"
 if [ -n "$RATE_5H_RESET" ]; then
-  NOW=$(date +%s)
   REMAINING=$((RATE_5H_RESET - NOW))
   if [ "$REMAINING" -le 0 ]; then
     RATE_5H_LABEL="0:00"
@@ -143,41 +129,47 @@ elif [ -n "$RATE_5H" ]; then
   RATE_5H_LABEL="5h"
 fi
 
+# 7d label: days when >= 24h remaining, else H:MM
+RATE_7D_LABEL=""
+if [ -n "$RATE_7D_RESET" ]; then
+  REMAINING=$((RATE_7D_RESET - NOW))
+  if [ "$REMAINING" -le 0 ]; then
+    RATE_7D_LABEL="0:00"
+  elif [ "$REMAINING" -ge 86400 ]; then
+    # Round up so e.g. "Wed afternoon → Sat 5am" reads as 3d, not 2d
+    RATE_7D_LABEL="$(( (REMAINING + 86399) / 86400 ))d"
+  else
+    REM_H=$((REMAINING / 3600))
+    REM_M=$(( (REMAINING % 3600) / 60 ))
+    RATE_7D_LABEL=$(printf '%d:%02d' "$REM_H" "$REM_M")
+  fi
+fi
+
 if [ -n "$RATE_5H" ]; then
   R5_BAR=$(make_bar "$RATE_5H")
-  RATE_SEG="${SEP}${DIM}${RATE_5H_LABEL}${RESET} ${R5_BAR}"
+  # Session: bar + percent, then remaining time
+  LINE1="${R5_BAR} ${DIM}${RATE_5H_LABEL}${RESET}"
   if [ -n "$RATE_7D" ]; then
     if [ "$RATE_7D" -ge 80 ]; then R7_COLOR="$FG_RED"
     elif [ "$RATE_7D" -ge 50 ]; then R7_COLOR="$FG_YELLOW"
     else R7_COLOR="$FG_GREEN"
     fi
-    RATE_SEG="${RATE_SEG} ${DIM}7d${RESET} ${R7_COLOR}${RATE_7D}%${RESET}"
+    # Weekly: percent, then remaining time (if available)
+    LINE1="${LINE1} ${R7_COLOR}${RATE_7D}%${RESET}"
+    [ -n "$RATE_7D_LABEL" ] && LINE1="${LINE1} ${DIM}${RATE_7D_LABEL}${RESET}"
   fi
 else
   # Before first API call: show placeholder
-  RATE_SEG="${SEP}${DIM}--:-- ${FG_CYAN}waiting...${RESET}"
-fi
-
-CANDIDATE="${OUT}${RATE_SEG}"
-if [ "$(vis_len "$CANDIDATE")" -le "$MAX_VIS" ]; then
-  OUT="$CANDIDATE"
+  LINE1="${FG_CYAN}waiting...${RESET} ${DIM}--:--${RESET}"
 fi
 
 # Context (percent only)
-CTX_SEG="${SEP}${DIM}ctx${RESET} ${CTX_COLOR}${CTX_INT}%${RESET}"
-CANDIDATE="${OUT}${CTX_SEG}"
-if [ "$(vis_len "$CANDIDATE")" -le "$MAX_VIS" ]; then
-  OUT="$CANDIDATE"
-fi
+LINE1="${LINE1}${SEP}${DIM}ctx${RESET} ${CTX_COLOR}${CTX_INT}%${RESET}"
 
-# Model + effort (at the end)
+# Model + effort
 if [ -n "$MODEL" ]; then
-  MODEL_SEG="${SEP}${BOLD}${MODEL}${RESET}"
-  [ -n "$EFFORT" ] && MODEL_SEG="${MODEL_SEG}${DIM} / ${RESET}${FG_CYAN}${EFFORT}${RESET}"
-  CANDIDATE="${OUT}${MODEL_SEG}"
-  if [ "$(vis_len "$CANDIDATE")" -le "$MAX_VIS" ]; then
-    OUT="$CANDIDATE"
-  fi
+  LINE1="${LINE1}${SEP}${BOLD}${MODEL}${RESET}"
+  [ -n "$EFFORT" ] && LINE1="${LINE1}${DIM} / ${RESET}${FG_CYAN}${EFFORT}${RESET}"
 fi
 
-printf '%b\n' "$OUT"
+printf '%b\n%b\n' "$LINE1" "$LINE2"
