@@ -26,6 +26,7 @@ export PATH=/opt/homebrew/opt/apr-util/bin:$PATH
 export PATH=/opt/homebrew/opt/httpd/bin:$PATH
 export PATH=/opt/homebrew/opt/python/libexec/bin:$PATH
 export PATH="$HOME/.symfony5/bin:$PATH"
+export PATH="$HOME/.local/bin:$PATH"
 
 # Path to your oh-my-zsh installation.
 export ZSH="$HOME/.oh-my-zsh"

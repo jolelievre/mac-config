@@ -71,6 +71,15 @@ WARNING: between each step it might be recommended to reboot your computer so th
 - iTerm2
 - Insomnium
 
+# install/15-install-claude.sh
+- Uninstall Homebrew claude-code cask if present (sunset path)
+- Install Claude Code via the official native installer (latest channel, auto-updates in the background)
+
+# install/16-claude-config.sh
+- Symlink claude/statusline.sh into ~/.claude/
+- Add statusLine config to ~/.claude/settings.json
+- Symlink each skill directory from claude/skills/ into ~/.claude/skills/
+
 Applications
 - iTerm2 (Go to Settings > General > Load preferences from a custom folder or URL > select this repo iterm2 folder)
 - Chrome (AdBlock Plus, JSON viewer, Blackfire companion)

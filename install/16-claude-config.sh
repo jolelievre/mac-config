@@ -1,6 +1,6 @@
 #!/bin/sh
 # Install / update Claude Code configuration
-# Usage: sh install/15-claude-config.sh
+# Usage: sh install/16-claude-config.sh
 #
 # What it does:
 #   1. Symlinks statusline.sh into ~/.claude/
