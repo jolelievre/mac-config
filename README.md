@@ -79,6 +79,11 @@ WARNING: between each step it might be recommended to reboot your computer so th
 - Symlink claude/statusline.sh into ~/.claude/
 - Add statusLine config to ~/.claude/settings.json
 - Symlink each skill directory from claude/skills/ into ~/.claude/skills/
+- Install/update caveman plugin (official installer) + seed ~/.config/caveman/config.json (defaultMode: lite)
+- Install/update rtk (brew) + wire its Claude Code hook (rtk init)
+- Symlink shared claude/rtk-config.toml -> ~/.config/rtk/config.toml -> ~/Library/Application Support/rtk/config.toml
+  (excludes curl, playwright, npx playwright, npm run from rewriting)
+- Each section is idempotent: installs what's missing, updates what's present, leaves customized config alone
 
 Applications
 - iTerm2 (Go to Settings > General > Load preferences from a custom folder or URL > select this repo iterm2 folder)
