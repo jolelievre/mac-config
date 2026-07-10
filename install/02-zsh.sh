@@ -1,11 +1,41 @@
 #!/bin/sh
 
 BASEDIR=$(dirname "$0")
+REPO_DIR=$(cd "$BASEDIR/.." && pwd)
 
-if test ! -f ~/.zshrc; then
-    echo Install ZSH config
-    cp $BASEDIR/../zsh/.zshrc ~/.zshrc
-fi
+# Write a stub that sources the repo file, keeping room below the source
+# line for machine-specific config. Converts old plain copies (backup kept),
+# leaves existing stubs and their local additions untouched.
+write_source_stub() {
+    _src="$1"; _target="$2"; _label="$3"
+
+    if [ -f "$_target" ] && grep -qF "source $_src" "$_target"; then
+        echo "  [ok]        $_label (already sources repo file)"
+        return
+    fi
+
+    _status="new"
+    if [ -f "$_target" ]; then
+        mv "$_target" "$_target.backup"
+        _status="converted"
+    fi
+
+    cat > "$_target" <<EOF
+# Shared config from mac-config repo - edit common config there.
+source $_src
+
+# Machine-specific config below this line.
+EOF
+
+    if [ "$_status" = "converted" ]; then
+        echo "  [converted] $_label (backup: $_target.backup)"
+    else
+        echo "  [new]       $_label -> sources $_src"
+    fi
+}
+
+echo Install ZSH config
+write_source_stub "$REPO_DIR/zsh/.zshrc" ~/.zshrc ".zshrc"
 
 if test ! -f /opt/homebrew/bin/zsh; then
     echo Install ZSH
@@ -18,7 +48,7 @@ if test ! -d ~/.oh-my-zsh; then
 
     # OhMyZSH setup its own default config on install
     echo "Forcing zsh config"
-    cp $BASEDIR/../zsh/.zshrc ~/.zshrc
+    write_source_stub "$REPO_DIR/zsh/.zshrc" ~/.zshrc ".zshrc"
 fi
 
 echo Install Fonts
@@ -29,10 +59,8 @@ if test ! -d /opt/homebrew/share/zsh-syntax-highlighting; then
     brew install zsh-syntax-highlighting
 fi
 
-if test ! -f ~/.oh-my-zsh/custom/aliases.zsh; then
-    echo Install Aliases
-    cp $BASEDIR/../zsh/.oh-my-zsh/custom/aliases.zsh ~/.oh-my-zsh/custom/aliases.zsh
-fi
+echo Install Aliases
+write_source_stub "$REPO_DIR/zsh/.oh-my-zsh/custom/aliases.zsh" ~/.oh-my-zsh/custom/aliases.zsh "aliases.zsh"
 
 if test ! -f ~/.oh-my-zsh/custom/themes/jolimbo.zsh-theme; then
     echo Install Jolimbo Theme

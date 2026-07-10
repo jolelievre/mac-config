@@ -24,7 +24,6 @@ export PATH=/opt/homebrew/opt/libiconv/bin:$PATH
 export PATH=/opt/homebrew/opt/apr/bin:$PATH
 export PATH=/opt/homebrew/opt/apr-util/bin:$PATH
 export PATH=/opt/homebrew/opt/httpd/bin:$PATH
-export PATH=/opt/homebrew/opt/python/libexec/bin:$PATH
 export PATH="$HOME/.symfony5/bin:$PATH"
 export PATH="$HOME/.local/bin:$PATH"
 
@@ -41,6 +40,13 @@ export NVM_DIR=~/.nvm
 nvmSource=$(brew --prefix nvm)/nvm.sh
 if test -f $nvmSource; then
     source $nvmSource
+fi
+
+# Handle pyenv config
+export PYENV_ROOT=~/.pyenv
+[[ -d $PYENV_ROOT/bin ]] && export PATH="$PYENV_ROOT/bin:$PATH"
+if command -v pyenv >/dev/null 2>&1; then
+    eval "$(pyenv init -)"
 fi
 
 # Set list of themes to load
