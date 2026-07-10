@@ -27,3 +27,4 @@ fi
 
 # Claude aliases
 alias claude-spend='npx claude-spend'
+alias claude-chrome='claude --chrome'
