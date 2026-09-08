@@ -6,6 +6,7 @@
 #   1. Symlinks statusline.sh into ~/.claude/
 #   2. Adds the statusLine config to ~/.claude/settings.json
 #   3. Symlinks each skill directory from claude/skills/ into ~/.claude/skills/
+#   3b. Imports the shared claude/CLAUDE.md (git and working preferences) from ~/.claude/CLAUDE.md
 #   4. Installs/updates the caveman plugin + seeds ~/.config/caveman/config.json
 #   5. Installs/updates rtk + wires its Claude Code hook (rtk init)
 #   6. Symlinks the shared claude/rtk-config.toml into rtk's config location
@@ -117,6 +118,32 @@ else
   done
 
   echo "  $INSTALLED skill(s) installed, $SKIPPED skipped."
+fi
+
+# --- Shared CLAUDE.md ------------------------------------------------------
+
+echo ""
+echo "=== Shared CLAUDE.md ==="
+
+CLAUDE_MD_SOURCE="$REPO_DIR/claude/CLAUDE.md"
+CLAUDE_MD="$CLAUDE_DIR/CLAUDE.md"
+IMPORT_LINE="@$CLAUDE_MD_SOURCE"
+
+if [ ! -f "$CLAUDE_MD_SOURCE" ]; then
+  echo "  [skip]    $CLAUDE_MD_SOURCE not found"
+elif [ -f "$CLAUDE_MD" ] && grep -qxF "$IMPORT_LINE" "$CLAUDE_MD"; then
+  echo "  [ok]      shared CLAUDE.md already imported"
+else
+  if [ -s "$CLAUDE_MD" ]; then
+    echo "" >> "$CLAUDE_MD"
+  fi
+  {
+    echo "# Shared config from mac-config repo - edit common config there."
+    echo "$IMPORT_LINE"
+    echo ""
+    echo "# Machine-specific config below this line."
+  } >> "$CLAUDE_MD"
+  echo "  [added]   $IMPORT_LINE to $CLAUDE_MD"
 fi
 
 # --- caveman plugin --------------------------------------------------------

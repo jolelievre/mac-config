@@ -80,6 +80,7 @@ WARNING: between each step it might be recommended to reboot your computer so th
 - Symlink claude/statusline.sh into ~/.claude/
 - Add statusLine config to ~/.claude/settings.json
 - Symlink each skill directory from claude/skills/ into ~/.claude/skills/
+- Import the shared claude/CLAUDE.md (git and working preferences for Claude Code) from ~/.claude/CLAUDE.md, machine-specific lines stay below it
 - Install/update caveman plugin (official installer) + seed ~/.config/caveman/config.json (defaultMode: lite)
 - Install/update rtk (brew) + wire its Claude Code hook (rtk init)
 - Symlink shared claude/rtk-config.toml -> ~/.config/rtk/config.toml -> ~/Library/Application Support/rtk/config.toml
