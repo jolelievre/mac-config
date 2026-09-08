@@ -38,6 +38,7 @@ WARNING: between each step it might be recommended to reboot your computer so th
 # install/06-prestashop-tools.sh
 - Clone prestashop tools repository
 - Install prestashop tools scripts
+- Clone PrestaShop AI skills (PrestaShop/skills) into ~/dev/prestashop-claude-skills
 
 # install/07-git.sh
 - Set default git config (global .gitignore)
@@ -84,6 +85,13 @@ WARNING: between each step it might be recommended to reboot your computer so th
 - Symlink shared claude/rtk-config.toml -> ~/.config/rtk/config.toml -> ~/Library/Application Support/rtk/config.toml
   (excludes curl, playwright, npx playwright, npm run from rewriting)
 - Each section is idempotent: installs what's missing, updates what's present, leaves customized config alone
+
+# install/17-prestashop-claude.sh (optional, PrestaShop machines only)
+- Import ps-install-tools/claude/CLAUDE.md from ~/.claude/CLAUDE.md (local instances + ps-* tools knowledge)
+- Add the SessionStart hook printing ps-infos when a session opens inside ~/www/prestashop-<suffix>
+- Allow the read-only ps-infos command without permission prompt
+- Symlink the developer skills of ~/dev/prestashop-claude-skills (PrestaShop/skills, e.g. prestashop-pr-qa) into ~/.claude/skills/
+- Requires install/06-prestashop-tools.sh, skipped when ~/dev/ps-install-tools is absent
 
 Applications
 - iTerm2 (Go to Settings > General > Load preferences from a custom folder or URL > select this repo iterm2 folder)

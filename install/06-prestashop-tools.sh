@@ -17,3 +17,10 @@ if test ! -d ~/dev/ps-install-tools; then
 else
     echo PrestaShop Install tools already installed
 fi
+
+if test ! -d ~/dev/prestashop-claude-skills; then
+    echo Clone PrestaShop AI skills
+    git clone git@github.com:PrestaShop/skills.git ~/dev/prestashop-claude-skills
+else
+    echo PrestaShop AI skills already installed
+fi
