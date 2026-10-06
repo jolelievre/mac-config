@@ -13,6 +13,12 @@ When the user types `/graphify`, invoke the Skill tool with `skill: "graphify"` 
 
 - In plan mode, when I ask questions, answer them in the chat first and update the plan file. Open the plan view (ExitPlanMode) only when I ask to see the plan.
 
+# Code comments & docblocks
+
+- Keep docblocks and comments minimal. Long explanations are harder to read than short ones, and too much context buries the point.
+- Do not document what the code already says. Aim for code that is self-explanatory, and comment only where real complexity remains.
+- When something does need explaining, explain the *why* in as few words as possible, without losing the substance.
+
 # Shell
 
 - `rm` is aliased to `rm -i` and `cat` to `bat` in my shell, and Claude Code tool shells load these aliases. Use `command rm` and `command cat` in tool calls and scripts, an interactive `rm -i` hangs without a terminal.
